@@ -34,7 +34,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-green-400 to-emerald-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-violet-600 shadow-lg shadow-cyan-500/20">
                 <svg
                   className="h-5 w-5 text-white"
                   fill="none"
@@ -49,7 +49,7 @@ export function Footer() {
                   />
                 </svg>
               </div>
-              <span className="text-xl font-bold">VibeSec</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">VibeSec</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Security scanning for AI-generated apps. Catch vulnerabilities before they catch you.

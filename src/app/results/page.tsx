@@ -39,9 +39,9 @@ function getSeverityColor(severity: Severity): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) return 'text-green-500';
-  if (score >= 50) return 'text-yellow-500';
-  return 'text-red-500';
+  if (score >= 80) return 'text-cyan-500';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-rose-500';
 }
 
 function getScoreLabel(score: number): string {
@@ -80,7 +80,7 @@ function FindingCard({ finding }: { finding: Finding }) {
               </svg>
               <span className="truncate">{finding.filePath}</span>
               {finding.lineNumber && (
-                <span className="shrink-0 text-green-500">Line {finding.lineNumber}</span>
+                <span className="shrink-0 text-cyan-500">Line {finding.lineNumber}</span>
               )}
             </div>
           </div>
@@ -97,7 +97,7 @@ function FindingCard({ finding }: { finding: Finding }) {
             <AccordionTrigger className="text-sm hover:no-underline py-3">
               <span className="flex items-center gap-2">
                 <svg
-                  className="w-4 h-4 text-green-500"
+                  className="w-4 h-4 text-cyan-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -177,7 +177,7 @@ function LockedFindingCard({ finding, onUnlock }: { finding: Finding; onUnlock: 
             </svg>
           </div>
           <p className="text-sm font-medium mb-2">Upgrade to View</p>
-          <Button size="sm" onClick={onUnlock} className="bg-green-600 hover:bg-green-700">
+          <Button size="sm" onClick={onUnlock} className="bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700">
             Unlock All Findings
           </Button>
         </div>
@@ -268,7 +268,7 @@ export default function ResultsPage() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500 mx-auto"></div>
             <p className="mt-4 text-muted-foreground">Loading results...</p>
           </div>
         </main>
@@ -350,7 +350,7 @@ export default function ResultsPage() {
                   </p>
                 )}
               </div>
-              <Button asChild size="lg" className="shrink-0 bg-green-600 hover:bg-green-700">
+              <Button asChild size="lg" className="shrink-0 bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700">
                 <Link href="/#scanner">Scan Another Repo</Link>
               </Button>
             </div>
@@ -388,8 +388,8 @@ export default function ResultsPage() {
                       />
                       <defs>
                         <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" className={`${result.securityScore >= 80 ? 'text-green-500' : result.securityScore >= 50 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
-                          <stop offset="100%" className={`${result.securityScore >= 80 ? 'text-emerald-500' : result.securityScore >= 50 ? 'text-orange-500' : 'text-rose-500'}`} stopColor="currentColor" />
+                          <stop offset="0%" className={`${result.securityScore >= 80 ? 'text-cyan-500' : result.securityScore >= 50 ? 'text-amber-500' : 'text-rose-500'}`} stopColor="currentColor" />
+                          <stop offset="100%" className={`${result.securityScore >= 80 ? 'text-violet-500' : result.securityScore >= 50 ? 'text-orange-500' : 'text-red-500'}`} stopColor="currentColor" />
                         </linearGradient>
                       </defs>
                     </svg>
@@ -482,11 +482,11 @@ export default function ResultsPage() {
         <section className="py-8 pb-16">
           <div className="container mx-auto px-4 max-w-5xl">
             {result.findings.length === 0 ? (
-              <Card className="bg-green-500/5 border-green-500/20">
+              <Card className="bg-cyan-500/5 border-cyan-500/20">
                 <CardContent className="py-12 text-center">
-                  <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <div className="w-20 h-20 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg
-                      className="w-10 h-10 text-green-500"
+                      className="w-10 h-10 text-cyan-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -499,13 +499,13 @@ export default function ResultsPage() {
                       />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold text-green-500 mb-3">
+                  <h2 className="text-2xl font-bold text-cyan-500 mb-3">
                     No Vulnerabilities Found!
                   </h2>
                   <p className="text-muted-foreground max-w-md mx-auto">
                     Great job! Your repository passed all 40+ security checks. Keep up the secure coding practices!
                   </p>
-                  <Button asChild className="mt-6 bg-green-600 hover:bg-green-700">
+                  <Button asChild className="mt-6 bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700">
                     <Link href="/#scanner">Scan Another Repository</Link>
                   </Button>
                 </CardContent>
@@ -567,10 +567,10 @@ export default function ResultsPage() {
                 {/* Upgrade CTA */}
                 {lockedFindings > 0 && (
                   <div className="mt-12 pt-8 border-t border-border/40">
-                    <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
+                    <Card className="bg-gradient-to-br from-cyan-500/10 to-violet-500/10 border-cyan-500/20">
                       <CardContent className="py-8 text-center">
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10 mb-4">
-                          <svg className="h-8 w-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/10 mb-4">
+                          <svg className="h-8 w-8 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                           </svg>
                         </div>
@@ -590,7 +590,7 @@ export default function ResultsPage() {
                               Sign Up Free
                             </Button>
                           )}
-                          <Button asChild className="bg-green-600 hover:bg-green-700">
+                          <Button asChild className="bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700">
                             <Link href="/pricing">
                               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -601,13 +601,13 @@ export default function ResultsPage() {
                         </div>
                         <div className="mt-6 flex items-center justify-center gap-6 text-sm text-muted-foreground">
                           <div className="flex items-center gap-2">
-                            <svg className="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="h-4 w-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                             Starter: $19.99/mo
                           </div>
                           <div className="flex items-center gap-2">
-                            <svg className="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="h-4 w-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                             Pro: $99/mo

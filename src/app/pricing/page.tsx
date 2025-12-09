@@ -124,7 +124,7 @@ export default function PricingPage() {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
                 Simple, transparent{' '}
-                <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 to-violet-600 bg-clip-text text-transparent">
                   pricing
                 </span>
               </h1>
@@ -142,10 +142,10 @@ export default function PricingPage() {
               {plans.map((plan) => (
                 <Card
                   key={plan.name}
-                  className={`relative flex flex-col ${plan.popular ? 'border-green-500 shadow-lg shadow-green-500/10' : ''}`}
+                  className={`relative flex flex-col ${plan.popular ? 'border-cyan-500 shadow-lg shadow-cyan-500/20' : ''}`}
                 >
                   {plan.popular && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 hover:bg-green-600">
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-500 hover:to-violet-600">
                       Most Popular
                     </Badge>
                   )}
@@ -162,7 +162,7 @@ export default function PricingPage() {
                       {plan.features.map((feature, index) => (
                         <li key={index} className="flex items-start gap-3">
                           <svg
-                            className="h-5 w-5 text-green-500 shrink-0 mt-0.5"
+                            className="h-5 w-5 text-cyan-500 shrink-0 mt-0.5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -200,7 +200,7 @@ export default function PricingPage() {
                   <CardFooter>
                     <Button
                       asChild
-                      className={`w-full ${plan.popular ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                      className={`w-full ${plan.popular ? 'bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700' : ''}`}
                       variant={plan.popular ? 'default' : 'outline'}
                     >
                       <Link href={plan.href}>{plan.cta}</Link>
@@ -222,7 +222,7 @@ export default function PricingPage() {
                   <tr className="border-b border-border">
                     <th className="text-left py-4 pr-4 font-medium">Feature</th>
                     <th className="text-center py-4 px-4 font-medium">Free</th>
-                    <th className="text-center py-4 px-4 font-medium text-green-500">Starter</th>
+                    <th className="text-center py-4 px-4 font-medium text-cyan-500">Starter</th>
                     <th className="text-center py-4 px-4 font-medium">Pro</th>
                   </tr>
                 </thead>
@@ -233,7 +233,7 @@ export default function PricingPage() {
                       <td className="py-3 px-4 text-center">
                         {typeof feature.free === 'boolean' ? (
                           feature.free ? (
-                            <svg className="h-5 w-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="h-5 w-5 text-cyan-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                           ) : (
@@ -245,10 +245,10 @@ export default function PricingPage() {
                           <span className="text-sm text-muted-foreground">{feature.free}</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-center bg-green-500/5">
+                      <td className="py-3 px-4 text-center bg-cyan-500/5">
                         {typeof feature.starter === 'boolean' ? (
                           feature.starter ? (
-                            <svg className="h-5 w-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="h-5 w-5 text-cyan-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                           ) : (
@@ -263,7 +263,7 @@ export default function PricingPage() {
                       <td className="py-3 px-4 text-center">
                         {typeof feature.pro === 'boolean' ? (
                           feature.pro ? (
-                            <svg className="h-5 w-5 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="h-5 w-5 text-cyan-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                           ) : (
@@ -286,7 +286,7 @@ export default function PricingPage() {
         {/* Enterprise Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-2xl p-8 md:p-12 border border-green-500/20">
+            <div className="max-w-4xl mx-auto bg-gradient-to-br from-cyan-500/10 to-violet-500/10 rounded-2xl p-8 md:p-12 border border-cyan-500/20">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
                   <h2 className="text-2xl font-bold">Enterprise</h2>
@@ -320,13 +320,13 @@ export default function PricingPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-t border-green-500/20">
+        <section className="py-16 bg-gradient-to-br from-cyan-500/10 to-violet-500/10 border-t border-cyan-500/20">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold">Ready to secure your code?</h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
               Start with a free scan and see exactly how many vulnerabilities are hiding in your codebase.
             </p>
-            <Button asChild size="lg" className="mt-8 bg-green-600 hover:bg-green-700">
+            <Button asChild size="lg" className="mt-8 bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700 shadow-lg shadow-cyan-500/25">
               <Link href="/#scanner">Scan Free Now</Link>
             </Button>
           </div>

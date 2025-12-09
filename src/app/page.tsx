@@ -30,7 +30,7 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
       </svg>
     ),
-    color: 'text-red-500 bg-red-500/10',
+    color: 'text-rose-500 bg-rose-500/10',
   },
   {
     title: 'Secret Detection',
@@ -40,7 +40,7 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
       </svg>
     ),
-    color: 'text-yellow-500 bg-yellow-500/10',
+    color: 'text-amber-500 bg-amber-500/10',
   },
   {
     title: 'Injection Prevention',
@@ -60,7 +60,7 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     ),
-    color: 'text-blue-500 bg-blue-500/10',
+    color: 'text-cyan-500 bg-cyan-500/10',
   },
   {
     title: 'IDOR Detection',
@@ -70,7 +70,7 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
-    color: 'text-purple-500 bg-purple-500/10',
+    color: 'text-violet-500 bg-violet-500/10',
   },
   {
     title: 'Dependency Audit',
@@ -80,7 +80,7 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
     ),
-    color: 'text-green-500 bg-green-500/10',
+    color: 'text-blue-500 bg-blue-500/10',
   },
 ];
 
@@ -172,25 +172,26 @@ export default function HomePage() {
         <section className="relative overflow-hidden">
           {/* Background gradient */}
           <div className="absolute inset-0 -z-10">
-            <div className="absolute inset-0 bg-gradient-to-b from-green-500/5 via-transparent to-transparent" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-green-500/10 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-violet-500/5 to-transparent" />
+            <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl" />
+            <div className="absolute top-20 right-1/4 w-[400px] h-[400px] bg-violet-500/10 rounded-full blur-3xl" />
           </div>
 
           <div className="container mx-auto px-4 pt-20 pb-24 md:pt-32 md:pb-32">
             <div className="mx-auto max-w-4xl text-center">
               {/* Badge */}
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-4 py-1.5">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 backdrop-blur-sm">
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-500"></span>
                 </span>
-                <span className="text-sm font-medium text-green-400">40+ Security Checks Available</span>
+                <span className="text-sm font-medium text-cyan-400">40+ Security Checks Available</span>
               </div>
 
               {/* Headline */}
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
                 Don&apos;t let your{' '}
-                <span className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-500 bg-clip-text text-transparent">
                   Vibe Code
                 </span>{' '}
                 leak your data
@@ -207,7 +208,7 @@ export default function HomePage() {
 
               {/* Scanner Form */}
               <div id="scanner" className="mt-10 mx-auto max-w-2xl">
-                <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-2xl shadow-green-500/5">
+                <Card className="border-cyan-500/20 bg-card/50 backdrop-blur-sm shadow-2xl shadow-cyan-500/10">
                   <CardContent className="p-6">
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="flex gap-3">
@@ -235,7 +236,7 @@ export default function HomePage() {
                         <Button
                           type="submit"
                           size="lg"
-                          className="h-12 px-8 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg shadow-green-500/25 transition-all hover:shadow-green-500/40"
+                          className="h-12 px-8 bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700 text-white font-semibold shadow-lg shadow-cyan-500/25 transition-all hover:shadow-cyan-500/40"
                           disabled={isLoading}
                         >
                           {isLoading ? (
@@ -300,7 +301,7 @@ export default function HomePage() {
                                 href="https://github.com/settings/tokens/new?scopes=repo&description=VibeSec%20Scanner"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-green-500 hover:underline"
+                                className="text-cyan-500 hover:underline"
                               >
                                 Create a token
                               </a>{' '}
@@ -365,7 +366,7 @@ export default function HomePage() {
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {features.map((feature) => (
-                <Card key={feature.title} className="border-border/50 bg-card/50 backdrop-blur-sm transition-all hover:shadow-lg hover:shadow-green-500/5 hover:border-green-500/20">
+                <Card key={feature.title} className="border-border/50 bg-card/50 backdrop-blur-sm transition-all hover:shadow-lg hover:shadow-cyan-500/10 hover:border-cyan-500/30">
                   <CardContent className="p-6">
                     <div className={`inline-flex h-12 w-12 items-center justify-center rounded-lg ${feature.color}`}>
                       {feature.icon}
@@ -411,7 +412,7 @@ export default function HomePage() {
                 },
               ].map((item) => (
                 <div key={item.step} className="relative text-center">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-600 text-xl font-bold text-white shadow-lg shadow-green-500/25">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-violet-600 text-xl font-bold text-white shadow-lg shadow-cyan-500/25">
                     {item.step}
                   </div>
                   <h3 className="mt-6 text-lg font-semibold">{item.title}</h3>
@@ -445,7 +446,7 @@ export default function HomePage() {
                     </div>
                     <p className="text-muted-foreground">&ldquo;{testimonial.quote}&rdquo;</p>
                     <div className="mt-6 flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-600 text-sm font-semibold text-white">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-violet-600 text-sm font-semibold text-white">
                         {testimonial.avatar}
                       </div>
                       <div>
@@ -461,7 +462,7 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 md:py-28 bg-gradient-to-b from-green-500/10 via-green-500/5 to-transparent">
+        <section className="py-20 md:py-28 bg-gradient-to-b from-cyan-500/10 via-violet-500/5 to-transparent">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -471,7 +472,7 @@ export default function HomePage() {
                 Scan your first repository for free. No signup required.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700" asChild>
+                <Button size="lg" className="bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700 shadow-lg shadow-cyan-500/25" asChild>
                   <Link href="#scanner">Start Scanning</Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>

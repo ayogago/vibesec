@@ -19,7 +19,7 @@ export function Header() {
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-green-400 to-emerald-600 shadow-lg shadow-green-500/20">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-violet-600 shadow-lg shadow-cyan-500/30">
             <svg
               className="h-5 w-5 text-white"
               fill="none"
@@ -34,7 +34,7 @@ export function Header() {
               />
             </svg>
           </div>
-          <span className="text-xl font-bold tracking-tight">VibeSec</span>
+          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">VibeSec</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -55,7 +55,7 @@ export function Header() {
           <Button asChild variant="ghost" size="sm">
             <Link href="/contact">Contact</Link>
           </Button>
-          <Button asChild size="sm" className="bg-green-600 hover:bg-green-700">
+          <Button asChild size="sm" className="bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700 shadow-lg shadow-cyan-500/25">
             <Link href="/#scanner">Scan Now</Link>
           </Button>
         </div>
@@ -97,7 +97,7 @@ export function Header() {
               <Button asChild variant="outline" className="w-full">
                 <Link href="/contact">Contact</Link>
               </Button>
-              <Button asChild className="w-full bg-green-600 hover:bg-green-700">
+              <Button asChild className="w-full bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700">
                 <Link href="/#scanner">Scan Now</Link>
               </Button>
             </div>

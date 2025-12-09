@@ -50,7 +50,7 @@ export function SignupModal({ isOpen, onClose, onSuccess, mode = 'signup' }: Sig
       {/* Modal */}
       <Card className="relative z-10 w-full max-w-md mx-4 shadow-2xl border-border/50">
         <CardHeader className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-600 mb-4">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-violet-600 mb-4 shadow-lg shadow-cyan-500/20">
             <svg className="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
@@ -81,7 +81,7 @@ export function SignupModal({ isOpen, onClose, onSuccess, mode = 'signup' }: Sig
 
             <Button
               type="submit"
-              className="w-full h-12 bg-green-600 hover:bg-green-700"
+              className="w-full h-12 bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-600 hover:to-violet-700"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -119,10 +119,10 @@ export function SignupModal({ isOpen, onClose, onSuccess, mode = 'signup' }: Sig
               <Button
                 type="button"
                 variant="outline"
-                className="h-auto py-3 flex flex-col items-center gap-1 border-green-500/50"
+                className="h-auto py-3 flex flex-col items-center gap-1 border-cyan-500/50"
                 onClick={() => window.location.href = '/pricing'}
               >
-                <span className="font-semibold text-green-500">Pro</span>
+                <span className="font-semibold text-cyan-500">Pro</span>
                 <span className="text-xs text-muted-foreground">$99/mo</span>
               </Button>
             </div>
@@ -130,8 +130,8 @@ export function SignupModal({ isOpen, onClose, onSuccess, mode = 'signup' }: Sig
 
           <p className="text-center text-xs text-muted-foreground mt-6">
             By signing up, you agree to our{' '}
-            <a href="/terms" className="text-green-500 hover:underline">Terms</a> and{' '}
-            <a href="/privacy" className="text-green-500 hover:underline">Privacy Policy</a>
+            <a href="/terms" className="text-cyan-500 hover:underline">Terms</a> and{' '}
+            <a href="/privacy" className="text-cyan-500 hover:underline">Privacy Policy</a>
           </p>
         </CardContent>
 
