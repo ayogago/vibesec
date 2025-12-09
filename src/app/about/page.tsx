@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
@@ -81,18 +82,30 @@ export default function AboutPage() {
         {/* Story Section */}
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl font-bold text-center">Our Story</h2>
-              <div className="mt-8 space-y-6 text-muted-foreground leading-relaxed">
-                <p>
-                  VibeSec started from a simple observation: AI coding tools like Cursor, GitHub Copilot, and Claude are revolutionizing how we build software. Developers are shipping MVPs in hours instead of weeks. But with this speed comes a new challenge.
-                </p>
-                <p>
-                  AI-generated code often contains subtle security vulnerabilities—hardcoded secrets, SQL injection risks, missing input validation, and more. Traditional security tools are too slow and complex for the rapid iteration cycle of modern development.
-                </p>
-                <p>
-                  We built VibeSec to solve this problem. Just paste your GitHub URL, and in seconds you&apos;ll know exactly what security issues need attention before you ship.
-                </p>
+              <div className="mt-12 grid md:grid-cols-2 gap-12 items-center">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-green-500/10">
+                  <Image
+                    src="/images/team-working.jpg"
+                    alt="Team collaborating on security solutions"
+                    width={800}
+                    height={600}
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+                </div>
+                <div className="space-y-6 text-muted-foreground leading-relaxed">
+                  <p>
+                    VibeSec started from a simple observation: AI coding tools like Cursor, GitHub Copilot, and Claude are revolutionizing how we build software. Developers are shipping MVPs in hours instead of weeks. But with this speed comes a new challenge.
+                  </p>
+                  <p>
+                    AI-generated code often contains subtle security vulnerabilities—hardcoded secrets, SQL injection risks, missing input validation, and more. Traditional security tools are too slow and complex for the rapid iteration cycle of modern development.
+                  </p>
+                  <p>
+                    We built VibeSec to solve this problem. Just paste your GitHub URL, and in seconds you&apos;ll know exactly what security issues need attention before you ship.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

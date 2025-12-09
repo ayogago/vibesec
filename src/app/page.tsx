@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -89,19 +90,19 @@ const testimonials = [
     quote: "VibeSec caught a critical RLS vulnerability in my Bolt.new app that would have exposed all user data. Literally saved my startup.",
     author: "Sarah Chen",
     role: "Founder, Taskflow",
-    avatar: "SC",
+    avatar: "/images/avatars/sarah.jpg",
   },
   {
     quote: "I use v0 and Lovable for prototyping. VibeSec is now part of my workflow before every deployment. Essential tool.",
     author: "Marcus Rodriguez",
     role: "Senior Developer",
-    avatar: "MR",
+    avatar: "/images/avatars/marcus.jpg",
   },
   {
     quote: "Found three hardcoded API keys in a client project. The scan took 10 seconds. This should be mandatory for all AI-generated code.",
     author: "Alex Thompson",
     role: "Security Consultant",
-    avatar: "AT",
+    avatar: "/images/avatars/alex.jpg",
   },
 ];
 
@@ -331,6 +332,27 @@ export default function HomePage() {
                   </Badge>
                 ))}
               </div>
+
+              {/* Hero Image */}
+              <div className="mt-16 relative">
+                <div className="relative mx-auto max-w-4xl rounded-xl overflow-hidden border border-border/50 shadow-2xl shadow-green-500/10">
+                  <Image
+                    src="/images/hero/security-dashboard.jpg"
+                    alt="VibeSec Security Dashboard"
+                    width={1200}
+                    height={800}
+                    className="w-full h-auto"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="flex items-center gap-2 text-sm text-white/90">
+                      <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                      Scanning repositories in real-time
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -445,9 +467,13 @@ export default function HomePage() {
                     </div>
                     <p className="text-muted-foreground">&ldquo;{testimonial.quote}&rdquo;</p>
                     <div className="mt-6 flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-600 text-sm font-semibold text-white">
-                        {testimonial.avatar}
-                      </div>
+                      <Image
+                        src={testimonial.avatar}
+                        alt={testimonial.author}
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover"
+                      />
                       <div>
                         <div className="font-medium">{testimonial.author}</div>
                         <div className="text-sm text-muted-foreground">{testimonial.role}</div>

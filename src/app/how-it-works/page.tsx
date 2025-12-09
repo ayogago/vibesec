@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -188,11 +189,23 @@ export default function HowItWorksPage() {
         {/* Technical Details Section */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl font-bold text-center">Under the Hood</h2>
               <p className="mt-4 text-center text-muted-foreground max-w-2xl mx-auto">
                 VibeSec uses static analysis to scan your code without executing it. Here&apos;s how we keep your code safe while analyzing it.
               </p>
+
+              {/* Dashboard Image */}
+              <div className="mt-12 relative rounded-xl overflow-hidden border border-border/50 shadow-2xl shadow-green-500/10">
+                <Image
+                  src="/images/dashboard.jpg"
+                  alt="Security analytics dashboard"
+                  width={800}
+                  height={500}
+                  className="w-full h-auto"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+              </div>
 
               <div className="mt-12 grid md:grid-cols-2 gap-8">
                 <div className="space-y-6">
