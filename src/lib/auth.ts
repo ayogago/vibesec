@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
+import Credentials from "next-auth/providers/credentials"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -12,19 +13,49 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
     }),
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+        userId: { label: "User ID", type: "text" },
+        userName: { label: "User Name", type: "text" },
+      },
+      async authorize(credentials) {
+        // Credentials are validated on the client side using our users.ts
+        // This just creates the session
+        if (credentials?.userId && credentials?.email) {
+          return {
+            id: credentials.userId as string,
+            email: credentials.email as string,
+            name: credentials.userName as string || credentials.email as string,
+          }
+        }
+        return null
+      },
+    }),
   ],
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
       if (account) {
         token.accessToken = account.access_token
-        token.githubId = profile?.id
+        if (account.provider === "github") {
+          token.githubId = profile?.id
+          token.provider = "github"
+        } else {
+          token.provider = "credentials"
+        }
+      }
+      if (user) {
+        token.userId = user.id
       }
       return token
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string
-      session.user.id = token.sub as string
+      session.user.id = (token.userId || token.sub) as string
       session.user.githubId = token.githubId as number
+      session.user.provider = token.provider as string
       return session
     },
   },
@@ -47,6 +78,7 @@ declare module "next-auth" {
       email?: string | null
       image?: string | null
       githubId?: number
+      provider?: string
     }
   }
 }

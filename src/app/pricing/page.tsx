@@ -11,6 +11,7 @@ const plans = [
     description: 'Try VibeSec and see what you\'re missing',
     price: '$0',
     period: 'forever',
+    tier: 'free',
     features: [
       '1 scan per day',
       'View 1 finding per scan (sample)',
@@ -22,8 +23,8 @@ const plans = [
       'Limited finding visibility',
       'No export options',
     ],
-    cta: 'Get Started',
-    href: '/#scanner',
+    cta: 'Get Started Free',
+    href: '/signup?plan=free',
     popular: false,
   },
   {
@@ -31,6 +32,7 @@ const plans = [
     description: 'For indie hackers and solo developers',
     price: '$19.99',
     period: '/month',
+    tier: 'starter',
     features: [
       '10 scans per day',
       'View ALL findings',
@@ -40,8 +42,8 @@ const plans = [
       'Email support',
     ],
     limitations: [],
-    cta: 'Start Starter',
-    href: '/contact',
+    cta: 'Start Starter Plan',
+    href: '/signup?plan=starter',
     popular: true,
   },
   {
@@ -49,6 +51,7 @@ const plans = [
     description: 'For teams and agencies shipping daily',
     price: '$99',
     period: '/month',
+    tier: 'pro',
     features: [
       '50 scans per day',
       'Everything in Starter, plus:',
@@ -61,7 +64,7 @@ const plans = [
     ],
     limitations: [],
     cta: 'Go Pro',
-    href: '/contact',
+    href: '/signup?plan=pro',
     popular: false,
   },
 ];
