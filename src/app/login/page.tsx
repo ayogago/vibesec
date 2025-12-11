@@ -9,8 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
-import { Github, Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
-import { validateCredentials, setCurrentUser, initializeAdminUser } from "@/lib/users"
+import { Github, Shield, Loader2, Mail, Lock, ArrowRight, Database } from "lucide-react"
+import { validateCredentials as validateLocalCredentials, setCurrentUser, initializeAdminUser } from "@/lib/users"
 import { SubscriptionTier } from "@/lib/subscription"
 
 function LoginContent() {
@@ -26,11 +26,31 @@ function LoginContent() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [initialized, setInitialized] = useState(false)
+  const [dbConfigured, setDbConfigured] = useState<boolean | null>(null)
 
-  // Initialize admin user on mount
+  // Check if database is configured and initialize admin
   useEffect(() => {
-    initializeAdminUser()
-    setInitialized(true)
+    const init = async () => {
+      // Check database status
+      try {
+        const res = await fetch('/api/admin/init', { method: 'GET' })
+        const data = await res.json()
+        setDbConfigured(data.configured)
+
+        // If database is configured and admin doesn't exist, create it
+        if (data.configured && !data.adminExists) {
+          await fetch('/api/admin/init', { method: 'POST' })
+        }
+      } catch {
+        setDbConfigured(false)
+      }
+
+      // Always initialize localStorage admin as fallback
+      initializeAdminUser()
+      setInitialized(true)
+    }
+
+    init()
   }, [])
 
   useEffect(() => {
@@ -54,43 +74,90 @@ function LoginContent() {
       return
     }
 
-    // Make sure admin user is initialized
-    if (!initialized) {
-      initializeAdminUser()
-    }
+    try {
+      // Try database authentication first if configured
+      if (dbConfigured) {
+        const res = await fetch('/api/auth/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        })
 
-    // Validate credentials
-    const user = validateCredentials(email, password)
+        const data = await res.json()
 
-    if (!user) {
-      setError("Invalid email or password. For admin access, use: admin@vibesec.dev / admin123")
+        if (res.ok && data.user) {
+          // Database validation successful, sign in with NextAuth
+          const signInResult = await signIn("credentials", {
+            email: data.user.email,
+            password,
+            useDatabase: "true",
+            redirect: false,
+          })
+
+          if (signInResult?.error) {
+            setError("Failed to sign in. Please try again.")
+            setLoading(false)
+            return
+          }
+
+          // Redirect based on plan
+          if (selectedPlan && selectedPlan !== "free" && selectedPlan !== "anonymous") {
+            router.push(`/checkout?plan=${selectedPlan}`)
+          } else {
+            router.push(callbackUrl)
+          }
+          return
+        }
+
+        // If not using localStorage fallback mode
+        if (!data.useLocalStorage) {
+          setError("Invalid email or password")
+          setLoading(false)
+          return
+        }
+      }
+
+      // Fallback to localStorage validation
+      if (!initialized) {
+        initializeAdminUser()
+      }
+
+      const user = validateLocalCredentials(email, password)
+
+      if (!user) {
+        setError("Invalid email or password. For admin access, use: admin@vibesec.dev / admin123")
+        setLoading(false)
+        return
+      }
+
+      // Set current user in localStorage
+      setCurrentUser(user.id)
+
+      // Sign in with credentials (localStorage mode)
+      const signInResult = await signIn("credentials", {
+        email: user.email,
+        userId: user.id,
+        userName: user.name,
+        redirect: false,
+      })
+
+      if (signInResult?.error) {
+        setError("Failed to sign in. Please try again.")
+        setLoading(false)
+        return
+      }
+
+      // Check if user has a pending plan or selected a new plan
+      const redirectPlan = selectedPlan || user.pendingPlan
+      if (redirectPlan && redirectPlan !== "free" && redirectPlan !== "anonymous" && user.subscription === "free") {
+        router.push(`/checkout?plan=${redirectPlan}`)
+      } else {
+        router.push(callbackUrl)
+      }
+    } catch (err) {
+      console.error("Login error:", err)
+      setError("An error occurred. Please try again.")
       setLoading(false)
-      return
-    }
-
-    // Set current user in localStorage
-    setCurrentUser(user.id)
-
-    // Sign in with credentials
-    const signInResult = await signIn("credentials", {
-      email: user.email,
-      userId: user.id,
-      userName: user.name,
-      redirect: false,
-    })
-
-    if (signInResult?.error) {
-      setError("Failed to sign in. Please try again.")
-      setLoading(false)
-      return
-    }
-
-    // Check if user has a pending plan or selected a new plan
-    const redirectPlan = selectedPlan || user.pendingPlan
-    if (redirectPlan && redirectPlan !== "free" && redirectPlan !== "anonymous" && user.subscription === "free") {
-      router.push(`/checkout?plan=${redirectPlan}`)
-    } else {
-      router.push(callbackUrl)
     }
   }
 
@@ -133,6 +200,14 @@ function LoginContent() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Database status indicator */}
+            {dbConfigured !== null && (
+              <div className={`flex items-center gap-2 text-xs ${dbConfigured ? 'text-green-500' : 'text-yellow-500'}`}>
+                <Database className="h-3 w-3" />
+                {dbConfigured ? 'Secure database connected' : 'Using local storage (demo mode)'}
+              </div>
+            )}
+
             {(error || (authError && !error)) && (
               <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
                 {error ||
