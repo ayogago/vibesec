@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { Github, Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
-import { validateCredentials, setCurrentUser } from "@/lib/users"
+import { validateCredentials, setCurrentUser, initializeAdminUser } from "@/lib/users"
 import { SubscriptionTier } from "@/lib/subscription"
 
 function LoginContent() {
@@ -25,6 +25,13 @@ function LoginContent() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [initialized, setInitialized] = useState(false)
+
+  // Initialize admin user on mount
+  useEffect(() => {
+    initializeAdminUser()
+    setInitialized(true)
+  }, [])
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -47,11 +54,16 @@ function LoginContent() {
       return
     }
 
+    // Make sure admin user is initialized
+    if (!initialized) {
+      initializeAdminUser()
+    }
+
     // Validate credentials
     const user = validateCredentials(email, password)
 
     if (!user) {
-      setError("Invalid email or password")
+      setError("Invalid email or password. For admin access, use: admin@vibesec.dev / admin123")
       setLoading(false)
       return
     }
@@ -121,7 +133,7 @@ function LoginContent() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {(error || authError) && (
+            {(error || (authError && !error)) && (
               <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
                 {error ||
                   (authError === "OAuthAccountNotLinked"
@@ -132,9 +144,16 @@ function LoginContent() {
                     ? "Error occurred during callback. Please try again."
                     : authError === "CredentialsSignin"
                     ? "Invalid email or password."
+                    : authError === "Configuration"
+                    ? "Server configuration error. Please try again."
                     : "An error occurred. Please try again.")}
               </div>
             )}
+
+            {/* Admin hint */}
+            <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm">
+              <strong>Admin access:</strong> admin@vibesec.dev / admin123
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
@@ -148,7 +167,10 @@ function LoginContent() {
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setError("")
+                    }}
                     className="pl-10"
                     required
                   />
@@ -174,7 +196,10 @@ function LoginContent() {
                     type="password"
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value)
+                      setError("")
+                    }}
                     className="pl-10"
                     required
                   />
