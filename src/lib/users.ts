@@ -3,6 +3,13 @@
 
 import { SubscriptionTier } from "./subscription"
 
+// Admin credentials - these can be used to login to the admin dashboard
+export const ADMIN_CREDENTIALS = {
+  email: "admin@vibesec.dev",
+  password: "admin123",
+  name: "VibeSec Admin",
+}
+
 export interface StoredUser {
   id: string
   email: string
@@ -223,4 +230,26 @@ export function linkGitHubAccount(
 export function findUserByGitHubId(githubId: number): StoredUser | null {
   const users = getAllUsers()
   return users.find((u) => u.githubId === githubId) || null
+}
+
+// Initialize admin user if it doesn't exist
+export function initializeAdminUser(): void {
+  if (typeof window === "undefined") return
+
+  const existingAdmin = findUserByEmail(ADMIN_CREDENTIALS.email)
+  if (!existingAdmin) {
+    const adminUser: StoredUser = {
+      id: "admin_vibesec_001",
+      email: ADMIN_CREDENTIALS.email,
+      name: ADMIN_CREDENTIALS.name,
+      password: ADMIN_CREDENTIALS.password,
+      subscription: "pro",
+      createdAt: new Date().toISOString(),
+    }
+
+    const users = getAllUsers()
+    users.push(adminUser)
+    saveUsers(users)
+    console.log("Admin user initialized")
+  }
 }
