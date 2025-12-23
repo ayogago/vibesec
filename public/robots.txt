@@ -1,0 +1,26 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/*
+Disallow: /shef
+Disallow: /dashboard
+Disallow: /checkout
+
+# Allow specific public pages
+Allow: /
+Allow: /about
+Allow: /pricing
+Allow: /how-it-works
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /login
+Allow: /signup
+
+# Sitemap
+Sitemap: https://securesitescan.com/sitemap.xml

@@ -12,7 +12,8 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    // In production, send to error reporting service (e.g., Sentry)
+    // For now, errors are silently handled
   }, [error]);
 
   return (

@@ -3,11 +3,16 @@
 
 import { SubscriptionTier } from "./subscription"
 
-// Admin credentials - these can be used to login to the admin dashboard
-export const ADMIN_CREDENTIALS = {
-  email: "info@securesitescan.com",
-  password: "admin123",
-  name: "SecureSiteScan Admin",
+// Admin emails - credentials should be stored securely in database
+// These emails have admin privileges when authenticated
+export const ADMIN_EMAILS = [
+  "info@securesitescan.com",
+  "owner@securesitescan.com",
+];
+
+// Check if email is admin
+export function isAdminEmail(email: string): boolean {
+  return ADMIN_EMAILS.includes(email.toLowerCase());
 }
 
 export interface StoredUser {
@@ -232,24 +237,9 @@ export function findUserByGitHubId(githubId: number): StoredUser | null {
   return users.find((u) => u.githubId === githubId) || null
 }
 
-// Initialize admin user if it doesn't exist
+// Note: Admin users should be created through the database with properly hashed passwords
+// This function is deprecated and should not be used in production
 export function initializeAdminUser(): void {
-  if (typeof window === "undefined") return
-
-  const existingAdmin = findUserByEmail(ADMIN_CREDENTIALS.email)
-  if (!existingAdmin) {
-    const adminUser: StoredUser = {
-      id: "admin_securesitescan_001",
-      email: ADMIN_CREDENTIALS.email,
-      name: ADMIN_CREDENTIALS.name,
-      password: ADMIN_CREDENTIALS.password,
-      subscription: "pro",
-      createdAt: new Date().toISOString(),
-    }
-
-    const users = getAllUsers()
-    users.push(adminUser)
-    saveUsers(users)
-    console.log("Admin user initialized")
-  }
+  // Admin users should be managed through the database, not localStorage
+  // This is intentionally a no-op for security reasons
 }

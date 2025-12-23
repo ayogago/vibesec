@@ -88,13 +88,11 @@ export async function createUser(
       .single();
 
     if (error) {
-      console.error('Error creating user:', error);
       return { error: 'Failed to create account' };
     }
 
     return { user: data as User };
-  } catch (err) {
-    console.error('Error creating user:', err);
+  } catch {
     return { error: 'Failed to create account' };
   }
 }
@@ -265,7 +263,6 @@ export async function addScanToHistory(
       .single();
 
     if (error) {
-      console.error('Error adding scan:', error);
       return null;
     }
 
@@ -347,8 +344,8 @@ export async function incrementDailyScanCount(userId: string): Promise<void> {
           count: 1,
         });
     }
-  } catch (err) {
-    console.error('Error incrementing scan count:', err);
+  } catch {
+    // Silently handle error - scan count increment is non-critical
   }
 }
 
@@ -397,9 +394,8 @@ export async function initializeAdminUser(): Promise<void> {
         subscription: 'pro' as SubscriptionTier,
       });
 
-      console.log('Admin user initialized in database');
     }
-  } catch (err) {
-    console.error('Error initializing admin:', err);
+  } catch {
+    // Admin initialization failed - will be handled on next startup
   }
 }
