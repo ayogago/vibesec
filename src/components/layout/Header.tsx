@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/Logo';
 import { LogOut, User, ChevronDown, LayoutDashboard, Settings } from 'lucide-react';
 
 const navigation = [
@@ -53,13 +54,7 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <nav className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <img
-              src="/images/logo.png"
-              alt="SecureSiteScan"
-              className="h-10 w-auto"
-            />
-          </Link>
+          <Logo size="md" />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:gap-1">
