@@ -52,38 +52,76 @@ function LoginContent() {
       return
     }
 
-    // Validate credentials
-    const user = validateCredentials(email, password)
+    try {
+      // First try to validate against the database
+      let user = null
+      let userId = ""
+      let userName = ""
 
-    if (!user) {
-      setError("Invalid email or password")
+      try {
+        const dbResponse = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        })
+
+        if (dbResponse.ok) {
+          const data = await dbResponse.json()
+          user = data.user
+          userId = user.id
+          userName = user.name
+        }
+      } catch {
+        // Database not available, fall back to localStorage
+      }
+
+      // If database validation failed, try localStorage
+      if (!user) {
+        const localUser = validateCredentials(email, password)
+        if (localUser) {
+          user = localUser
+          userId = localUser.id
+          userName = localUser.name
+        }
+      }
+
+      if (!user) {
+        setError("Invalid email or password")
+        setLoading(false)
+        return
+      }
+
+      // Set current user in localStorage
+      setCurrentUser(userId)
+
+      // Sign in with credentials
+      const signInResult = await signIn("credentials", {
+        email: user.email,
+        userId: userId,
+        userName: userName,
+        redirect: false,
+      })
+
+      if (signInResult?.error) {
+        console.error("SignIn error:", signInResult.error)
+        setError("Failed to sign in. Please try again.")
+        setLoading(false)
+        return
+      }
+
+      // Check if user has a pending plan or selected a new plan
+      const pendingPlan = user.pendingPlan || user.pending_plan
+      const subscription = user.subscription
+      const redirectPlan = selectedPlan || pendingPlan
+      if (redirectPlan && redirectPlan !== "free" && redirectPlan !== "anonymous" && subscription === "free") {
+        router.push(`/checkout?plan=${redirectPlan}`)
+      } else {
+        router.push(callbackUrl)
+      }
+    } catch (err) {
+      console.error("Login error:", err)
+      setError("An unexpected error occurred. Please try again.")
       setLoading(false)
-      return
-    }
-
-    // Set current user in localStorage
-    setCurrentUser(user.id)
-
-    // Sign in with credentials
-    const signInResult = await signIn("credentials", {
-      email: user.email,
-      userId: user.id,
-      userName: user.name,
-      redirect: false,
-    })
-
-    if (signInResult?.error) {
-      setError("Failed to sign in. Please try again.")
-      setLoading(false)
-      return
-    }
-
-    // Check if user has a pending plan or selected a new plan
-    const redirectPlan = selectedPlan || user.pendingPlan
-    if (redirectPlan && redirectPlan !== "free" && redirectPlan !== "anonymous" && user.subscription === "free") {
-      router.push(`/checkout?plan=${redirectPlan}`)
-    } else {
-      router.push(callbackUrl)
     }
   }
 
