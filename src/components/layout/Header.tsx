@@ -44,7 +44,7 @@ export function Header() {
             <img
               src="/images/logo.png"
               alt="SecureSiteScan.com"
-              className="h-8 w-auto"
+              className="h-[200px] w-auto"
             />
           </Link>
 
@@ -149,7 +149,7 @@ export function Header() {
                 <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                   <Link href="/login">Sign In</Link>
                 </Button>
-                <Button asChild size="sm" className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 px-4">
+                <Button asChild size="sm" className="rounded-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 px-4">
                   <Link href="/signup">Get Started</Link>
                 </Button>
               </>
@@ -255,7 +255,7 @@ export function Header() {
                   Sign Out
                 </Button>
               ) : (
-                <Button asChild className="w-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
+                <Button asChild className="w-full rounded-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white">
                   <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
                     Get Started
                   </Link>
