@@ -5,9 +5,9 @@ import { SubscriptionTier } from "./subscription"
 
 // Admin credentials - these can be used to login to the admin dashboard
 export const ADMIN_CREDENTIALS = {
-  email: "admin@vibesec.dev",
+  email: "admin@securesitescan.com",
   password: "admin123",
-  name: "VibeSec Admin",
+  name: "SecureSiteScan Admin",
 }
 
 export interface StoredUser {
@@ -38,9 +38,9 @@ export interface ScanHistoryItem {
 }
 
 // Storage keys
-const USERS_KEY = "vibesec_users"
-const CURRENT_USER_KEY = "vibesec_current_user"
-const SCAN_HISTORY_KEY = "vibesec_scan_history"
+const USERS_KEY = "securesitescan_users"
+const CURRENT_USER_KEY = "securesitescan_current_user"
+const SCAN_HISTORY_KEY = "securesitescan_scan_history"
 
 // Helper to generate IDs
 function generateId(): string {
@@ -239,7 +239,7 @@ export function initializeAdminUser(): void {
   const existingAdmin = findUserByEmail(ADMIN_CREDENTIALS.email)
   if (!existingAdmin) {
     const adminUser: StoredUser = {
-      id: "admin_vibesec_001",
+      id: "admin_securesitescan_001",
       email: ADMIN_CREDENTIALS.email,
       name: ADMIN_CREDENTIALS.name,
       password: ADMIN_CREDENTIALS.password,

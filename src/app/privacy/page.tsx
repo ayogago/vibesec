@@ -29,10 +29,10 @@ export default function PrivacyPage() {
                 <div>
                   <h2 className="text-2xl font-bold">Introduction</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    VibeSec (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our security scanning service.
+                    SecureSiteScan (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our security scanning service.
                   </p>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    Please read this privacy policy carefully. By using VibeSec, you agree to the collection and use of information in accordance with this policy.
+                    Please read this privacy policy carefully. By using SecureSiteScan, you agree to the collection and use of information in accordance with this policy.
                   </p>
                 </div>
 
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
                   <div className="mt-4 p-6 bg-green-500/10 rounded-lg border border-green-500/20">
                     <h3 className="font-semibold text-green-600 dark:text-green-400">Important: We Don&apos;t Store Your Code</h3>
                     <p className="mt-2 text-muted-foreground">
-                      VibeSec performs static analysis on your code in memory. We do not permanently store your source code on our servers. Code is fetched, analyzed, and immediately discarded after the scan completes.
+                      SecureSiteScan performs static analysis on your code in memory. We do not permanently store your source code on our servers. Code is fetched, analyzed, and immediately discarded after the scan completes.
                     </p>
                   </div>
                   <ul className="mt-4 space-y-2 text-muted-foreground">
@@ -204,8 +204,8 @@ export default function PrivacyPage() {
                   </ul>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     To exercise these rights, please contact us at{' '}
-                    <a href="mailto:privacy@vibesec.dev" className="text-green-500 hover:underline">
-                      privacy@vibesec.dev
+                    <a href="mailto:privacy@securesitescan.com" className="text-green-500 hover:underline">
+                      privacy@securesitescan.com
                     </a>.
                   </p>
                 </div>
@@ -235,11 +235,11 @@ export default function PrivacyPage() {
                   <ul className="mt-4 space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
-                      <span>Email: <a href="mailto:privacy@vibesec.dev" className="text-green-500 hover:underline">privacy@vibesec.dev</a></span>
+                      <span>Email: <a href="mailto:privacy@securesitescan.com" className="text-green-500 hover:underline">privacy@securesitescan.com</a></span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
-                      <span>Contact form: <a href="/contact" className="text-green-500 hover:underline">vibesec.dev/contact</a></span>
+                      <span>Contact form: <a href="/contact" className="text-green-500 hover:underline">securesitescan.com/contact</a></span>
                     </li>
                   </ul>
                 </div>

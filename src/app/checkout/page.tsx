@@ -167,7 +167,7 @@ function CheckoutContent() {
               </div>
               <h2 className="text-2xl font-bold mb-2">Payment Successful!</h2>
               <p className="text-muted-foreground mb-4">
-                Welcome to VibeSec {planInfo.name}! You now have access to all{" "}
+                Welcome to SecureSiteScan {planInfo.name}! You now have access to all{" "}
                 {planInfo.name} features.
               </p>
               <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20 mb-6">
@@ -214,7 +214,7 @@ function CheckoutContent() {
                   <Badge className="bg-green-600">${planInfo.price}/mo</Badge>
                 </CardTitle>
                 <CardDescription>
-                  Unlock the full power of VibeSec security scanning
+                  Unlock the full power of SecureSiteScan security scanning
                 </CardDescription>
               </CardHeader>
               <CardContent>

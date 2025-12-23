@@ -13,7 +13,7 @@ const navigation = [
 ];
 
 // Admin emails that have access to the admin dashboard
-const ADMIN_EMAILS = ["admin@vibesec.dev", "owner@vibesec.dev"];
+const ADMIN_EMAILS = ["admin@securesitescan.com", "owner@securesitescan.com"];
 
 export function Header() {
   const { data: session, status } = useSession();
@@ -59,7 +59,7 @@ export function Header() {
                 </svg>
               </div>
             </div>
-            <span className="text-lg font-semibold text-foreground">VibeSec</span>
+            <span className="text-lg font-semibold text-foreground">SecureSiteScan</span>
           </Link>
 
           {/* Desktop Navigation - Centered */}

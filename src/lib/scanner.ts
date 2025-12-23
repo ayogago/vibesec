@@ -1,4 +1,4 @@
-// Scanner core logic for VibeSec security analysis
+// Scanner core logic for SecureSiteScan security analysis
 
 export type Severity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
 
@@ -143,7 +143,7 @@ async function fetchRepoTree(
 ): Promise<{ files: GitHubTreeItem[]; error?: string }> {
   const headers: HeadersInit = {
     Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'VibeSec-Scanner',
+    'User-Agent': 'SecureSiteScan-Scanner',
   };
 
   if (token) {
@@ -190,7 +190,7 @@ async function fetchFileContent(
 ): Promise<string | null> {
   const headers: HeadersInit = {
     Accept: 'application/vnd.github.v3.raw',
-    'User-Agent': 'VibeSec-Scanner',
+    'User-Agent': 'SecureSiteScan-Scanner',
   };
 
   if (token) {
@@ -2935,7 +2935,7 @@ export async function scanRepository(
     .filter((f) => (f.size || 0) <= MAX_FILE_SIZE)
     .slice(0, MAX_TOTAL_FILES);
 
-  console.log(`[VibeSec] Scanning ${scannableFiles.length} files from ${owner}/${repo}`);
+  console.log(`[SecureSiteScan] Scanning ${scannableFiles.length} files from ${owner}/${repo}`);
 
   const findings: Finding[] = [];
   let totalBytes = 0;
@@ -2953,7 +2953,7 @@ export async function scanRepository(
 
     filesScanned++;
     totalBytes += content.length;
-    console.log(`[VibeSec] Scanning: ${file.path} (${content.length} bytes)`);
+    console.log(`[SecureSiteScan] Scanning: ${file.path} (${content.length} bytes)`);
 
     // Run all security checks
     findings.push(...checkSupabaseRLS(content, file.path));
@@ -3000,9 +3000,9 @@ export async function scanRepository(
     findings.push(...checkClickjacking(content, file.path));
   }
 
-  console.log(`[VibeSec] Total findings: ${findings.length}`);
-  console.log(`[VibeSec] Files scanned: ${filesScanned}`);
-  console.log(`[VibeSec] Score: ${calculateSecurityScore(findings)}`);
+  console.log(`[SecureSiteScan] Total findings: ${findings.length}`);
+  console.log(`[SecureSiteScan] Files scanned: ${filesScanned}`);
+  console.log(`[SecureSiteScan] Score: ${calculateSecurityScore(findings)}`);
 
   return {
     repoName: `${owner}/${repo}`,

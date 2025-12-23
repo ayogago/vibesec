@@ -29,7 +29,7 @@ export default function TermsPage() {
                 <div>
                   <h2 className="text-2xl font-bold">1. Acceptance of Terms</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    By accessing or using VibeSec (&quot;the Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, please do not use the Service.
+                    By accessing or using SecureSiteScan (&quot;the Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, please do not use the Service.
                   </p>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     We reserve the right to modify these Terms at any time. Continued use of the Service after any modifications constitutes your acceptance of the revised Terms.
@@ -39,7 +39,7 @@ export default function TermsPage() {
                 <div>
                   <h2 className="text-2xl font-bold">2. Description of Service</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    VibeSec is a security scanning service that analyzes GitHub repositories for potential security vulnerabilities. The Service performs static analysis on code and provides reports on detected issues.
+                    SecureSiteScan is a security scanning service that analyzes GitHub repositories for potential security vulnerabilities. The Service performs static analysis on code and provides reports on detected issues.
                   </p>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     The Service is provided &quot;as is&quot; and is intended to assist in identifying potential security issues. It is not a substitute for comprehensive security audits or professional security consulting.
@@ -49,7 +49,7 @@ export default function TermsPage() {
                 <div>
                   <h2 className="text-2xl font-bold">3. User Responsibilities</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    By using VibeSec, you agree to:
+                    By using SecureSiteScan, you agree to:
                   </p>
                   <ul className="mt-4 space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
@@ -111,7 +111,7 @@ export default function TermsPage() {
                 <div>
                   <h2 className="text-2xl font-bold">5. Intellectual Property</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    The Service, including its original content, features, and functionality, is owned by VibeSec and is protected by international copyright, trademark, and other intellectual property laws.
+                    The Service, including its original content, features, and functionality, is owned by SecureSiteScan and is protected by international copyright, trademark, and other intellectual property laws.
                   </p>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     You retain all rights to the code you submit for scanning. We do not claim any ownership of your code or repositories.
@@ -121,7 +121,7 @@ export default function TermsPage() {
                 <div>
                   <h2 className="text-2xl font-bold">6. Payment and Subscriptions</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    Some features of VibeSec require a paid subscription. By subscribing to a paid plan:
+                    Some features of SecureSiteScan require a paid subscription. By subscribing to a paid plan:
                   </p>
                   <ul className="mt-4 space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
@@ -158,7 +158,7 @@ export default function TermsPage() {
                 <div>
                   <h2 className="text-2xl font-bold">8. Limitation of Liability</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    TO THE MAXIMUM EXTENT PERMITTED BY LAW, VIBESEC SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
+                    TO THE MAXIMUM EXTENT PERMITTED BY LAW, SECURESITESCAN SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
                   </p>
                   <ul className="mt-4 space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
@@ -183,7 +183,7 @@ export default function TermsPage() {
                 <div>
                   <h2 className="text-2xl font-bold">9. Indemnification</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    You agree to indemnify and hold harmless VibeSec, its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising from your use of the Service or violation of these Terms.
+                    You agree to indemnify and hold harmless SecureSiteScan, its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising from your use of the Service or violation of these Terms.
                   </p>
                 </div>
 
@@ -230,11 +230,11 @@ export default function TermsPage() {
                   <ul className="mt-4 space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
-                      <span>Email: <a href="mailto:legal@vibesec.dev" className="text-green-500 hover:underline">legal@vibesec.dev</a></span>
+                      <span>Email: <a href="mailto:legal@securesitescan.com" className="text-green-500 hover:underline">legal@securesitescan.com</a></span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
-                      <span>Contact form: <a href="/contact" className="text-green-500 hover:underline">vibesec.dev/contact</a></span>
+                      <span>Contact form: <a href="/contact" className="text-green-500 hover:underline">securesitescan.com/contact</a></span>
                     </li>
                   </ul>
                 </div>

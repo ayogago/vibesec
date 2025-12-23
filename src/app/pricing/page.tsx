@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 const plans = [
   {
     name: 'Free',
-    description: 'Try VibeSec and see what you\'re missing',
+    description: 'Try SecureSiteScan and see what you\'re missing',
     price: '$0',
     period: 'forever',
     tier: 'free',

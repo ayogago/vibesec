@@ -36,7 +36,7 @@ export default function CookiesPage() {
                 <div>
                   <h2 className="text-2xl font-bold">How We Use Cookies</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
-                    VibeSec uses cookies and similar technologies for the following purposes:
+                    SecureSiteScan uses cookies and similar technologies for the following purposes:
                   </p>
 
                   <div className="mt-6 space-y-6">
@@ -231,8 +231,8 @@ export default function CookiesPage() {
                   <h2 className="text-2xl font-bold">Contact Us</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     If you have questions about our use of cookies, please contact us at{' '}
-                    <a href="mailto:privacy@vibesec.dev" className="text-green-500 hover:underline">
-                      privacy@vibesec.dev
+                    <a href="mailto:privacy@securesitescan.com" className="text-green-500 hover:underline">
+                      privacy@securesitescan.com
                     </a>.
                   </p>
                 </div>

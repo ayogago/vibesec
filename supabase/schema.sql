@@ -1,4 +1,4 @@
--- VibeSec Database Schema for Supabase
+-- SecureSiteScan Database Schema for Supabase
 -- Run this in Supabase SQL Editor to create the tables
 
 -- Enable UUID extension
@@ -104,8 +104,8 @@ CREATE POLICY "Users can manage own scan counts" ON daily_scan_counts
 INSERT INTO users (id, email, name, password_hash, subscription, created_at)
 VALUES (
     'a0000000-0000-0000-0000-000000000001',
-    'admin@vibesec.dev',
-    'VibeSec Admin',
+    'admin@securesitescan.com',
+    'SecureSiteScan Admin',
     '$2b$10$rOzJqQZQhPjLQmJX0D4Vf.W8Y9cP5E1tKqRzXzGz5A5nMvHq6qLHe', -- 'admin123' hashed
     'pro',
     NOW()

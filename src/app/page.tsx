@@ -258,7 +258,7 @@ export default function HomePage() {
                             <p className="text-xs text-muted-foreground">
                               Optional:{' '}
                               <a
-                                href="https://github.com/settings/tokens/new?scopes=repo&description=VibeSec%20Scanner"
+                                href="https://github.com/settings/tokens/new?scopes=repo&description=SecureSiteScan%20Scanner"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-400 hover:text-blue-300 underline-offset-2 hover:underline"
@@ -313,7 +313,7 @@ export default function HomePage() {
                 <span className="gradient-text">AI code</span>
               </h2>
               <p className="text-lg text-muted-foreground">
-                AI tools build fast but often skip critical security measures. VibeSec catches what they miss.
+                AI tools build fast but often skip critical security measures. SecureSiteScan catches what they miss.
               </p>
             </div>
 

@@ -39,7 +39,7 @@ export const SUBSCRIPTION_LIMITS: Record<SubscriptionTier, SubscriptionLimits> =
 export function getUserSubscription(): SubscriptionTier {
   if (typeof window === 'undefined') return 'anonymous';
 
-  const stored = localStorage.getItem('vibesec_subscription');
+  const stored = localStorage.getItem('securesitescan_subscription');
   if (stored && ['anonymous', 'free', 'starter', 'pro'].includes(stored)) {
     return stored as SubscriptionTier;
   }
@@ -49,19 +49,19 @@ export function getUserSubscription(): SubscriptionTier {
 // Set user's subscription (mock for now)
 export function setUserSubscription(tier: SubscriptionTier): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem('vibesec_subscription', tier);
+  localStorage.setItem('securesitescan_subscription', tier);
 }
 
 // Check if user is signed in
 export function isUserSignedIn(): boolean {
   if (typeof window === 'undefined') return false;
-  return localStorage.getItem('vibesec_user') !== null;
+  return localStorage.getItem('securesitescan_user') !== null;
 }
 
 // Mock sign in
 export function signInUser(email: string): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem('vibesec_user', JSON.stringify({ email, createdAt: new Date().toISOString() }));
+  localStorage.setItem('securesitescan_user', JSON.stringify({ email, createdAt: new Date().toISOString() }));
   // New signups get free tier
   if (getUserSubscription() === 'anonymous') {
     setUserSubscription('free');
@@ -71,14 +71,14 @@ export function signInUser(email: string): void {
 // Mock sign out
 export function signOutUser(): void {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem('vibesec_user');
+  localStorage.removeItem('securesitescan_user');
   setUserSubscription('anonymous');
 }
 
 // Get user email if signed in
 export function getUserEmail(): string | null {
   if (typeof window === 'undefined') return null;
-  const stored = localStorage.getItem('vibesec_user');
+  const stored = localStorage.getItem('securesitescan_user');
   if (stored) {
     try {
       return JSON.parse(stored).email;
@@ -94,7 +94,7 @@ export function getDailyScanCount(): number {
   if (typeof window === 'undefined') return 0;
 
   const today = new Date().toDateString();
-  const stored = localStorage.getItem('vibesec_scans');
+  const stored = localStorage.getItem('securesitescan_scans');
 
   if (stored) {
     try {
@@ -116,7 +116,7 @@ export function incrementScanCount(): void {
   const today = new Date().toDateString();
   const current = getDailyScanCount();
 
-  localStorage.setItem('vibesec_scans', JSON.stringify({
+  localStorage.setItem('securesitescan_scans', JSON.stringify({
     date: today,
     count: current + 1,
   }));

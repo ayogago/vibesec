@@ -18,7 +18,7 @@ export default function AboutPage() {
                 </span>
               </h1>
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-                We believe AI-assisted development should be fast AND secure. VibeSec was built to bridge the gap between rapid prototyping and production-ready security.
+                We believe AI-assisted development should be fast AND secure. SecureSiteScan was built to bridge the gap between rapid prototyping and production-ready security.
               </p>
             </div>
           </div>
@@ -85,13 +85,13 @@ export default function AboutPage() {
               <h2 className="text-3xl font-bold text-center">Our Story</h2>
               <div className="mt-8 space-y-6 text-muted-foreground leading-relaxed">
                 <p>
-                  VibeSec started from a simple observation: AI coding tools like Cursor, GitHub Copilot, and Claude are revolutionizing how we build software. Developers are shipping MVPs in hours instead of weeks. But with this speed comes a new challenge.
+                  SecureSiteScan started from a simple observation: AI coding tools like Cursor, GitHub Copilot, and Claude are revolutionizing how we build software. Developers are shipping MVPs in hours instead of weeks. But with this speed comes a new challenge.
                 </p>
                 <p>
                   AI-generated code often contains subtle security vulnerabilities—hardcoded secrets, SQL injection risks, missing input validation, and more. Traditional security tools are too slow and complex for the rapid iteration cycle of modern development.
                 </p>
                 <p>
-                  We built VibeSec to solve this problem. Just paste your GitHub URL, and in seconds you&apos;ll know exactly what security issues need attention before you ship.
+                  We built SecureSiteScan to solve this problem. Just paste your GitHub URL, and in seconds you&apos;ll know exactly what security issues need attention before you ship.
                 </p>
               </div>
             </div>

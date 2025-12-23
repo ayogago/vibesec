@@ -110,7 +110,7 @@ function LoginContent() {
             </div>
             <CardTitle className="text-2xl">Welcome Back</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Sign in to your VibeSec account
+              Sign in to your SecureSiteScan account
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

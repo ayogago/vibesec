@@ -156,7 +156,7 @@ function SignupContent() {
               </div>
               <CardTitle className="text-2xl">Create Your Account</CardTitle>
               <CardDescription className="text-muted-foreground">
-                Start securing your code with VibeSec
+                Start securing your code with SecureSiteScan
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

@@ -382,7 +382,7 @@ export async function initializeAdminUser(): Promise<void> {
   try {
     if (!isDatabaseConfigured()) return;
 
-    const adminEmail = 'admin@vibesec.dev';
+    const adminEmail = 'admin@securesitescan.com';
     const existing = await findUserByEmail(adminEmail);
 
     if (!existing) {
@@ -392,7 +392,7 @@ export async function initializeAdminUser(): Promise<void> {
       await client.from('users').insert({
         id: 'a0000000-0000-0000-0000-000000000001',
         email: adminEmail,
-        name: 'VibeSec Admin',
+        name: 'SecureSiteScan Admin',
         password_hash: passwordHash,
         subscription: 'pro' as SubscriptionTier,
       });

@@ -42,7 +42,7 @@ export function Footer() {
                   </svg>
                 </div>
               </div>
-              <span className="text-lg font-semibold">VibeSec</span>
+              <span className="text-lg font-semibold">SecureSiteScan</span>
             </Link>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
               Security scanning for AI-generated apps. Catch vulnerabilities before they catch you.
@@ -50,7 +50,7 @@ export function Footer() {
             {/* Social links */}
             <div className="mt-4 flex gap-3">
               <a
-                href="https://twitter.com/vibesec"
+                href="https://twitter.com/securesitescan"
                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -61,7 +61,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://github.com/vibesec"
+                href="https://github.com/securesitescan"
                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -129,7 +129,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-10 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} VibeSec. All rights reserved.
+            &copy; {new Date().getFullYear()} SecureSiteScan. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Built for the vibe coding era
