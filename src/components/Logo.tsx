@@ -7,75 +7,83 @@ interface LogoProps {
 
 export function Logo({ className = '', size = 'md' }: LogoProps) {
   const sizes = {
-    sm: { height: 24, iconSize: 20, textSize: 14, gap: 6 },
-    md: { height: 32, iconSize: 26, textSize: 18, gap: 8 },
-    lg: { height: 40, iconSize: 32, textSize: 22, gap: 10 },
+    sm: { height: 32, width: 220 },
+    md: { height: 44, width: 280 },
+    lg: { height: 56, width: 340 },
   };
 
-  const { height, iconSize, textSize, gap } = sizes[size];
+  const { height, width } = sizes[size];
 
   return (
-    <Link href="/" className={`flex items-center gap-2 ${className}`}>
+    <Link href="/" className={`flex items-center ${className}`}>
       <svg
         height={height}
-        viewBox="0 0 200 40"
+        width={width}
+        viewBox="0 0 280 44"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="flex-shrink-0"
       >
-        {/* Shield icon with scan lines */}
+        {/* Shield with lock icon */}
         <g>
-          {/* Shield background */}
+          {/* Outer shield */}
           <path
-            d="M20 4L6 10v10c0 9.55 5.97 18.48 14 22 8.03-3.52 14-12.45 14-22V10L20 4z"
-            fill="url(#shield-gradient)"
+            d="M22 3L5 10v12c0 11 7.2 21.3 17 25.5 9.8-4.2 17-14.5 17-25.5V10L22 3z"
+            fill="url(#shield-bg)"
           />
-          {/* Shield border */}
           <path
-            d="M20 4L6 10v10c0 9.55 5.97 18.48 14 22 8.03-3.52 14-12.45 14-22V10L20 4z"
-            stroke="url(#border-gradient)"
-            strokeWidth="1.5"
+            d="M22 3L5 10v12c0 11 7.2 21.3 17 25.5 9.8-4.2 17-14.5 17-25.5V10L22 3z"
+            stroke="url(#shield-border)"
+            strokeWidth="2"
             fill="none"
           />
-          {/* Scan lines */}
+
+          {/* Lock body */}
+          <rect
+            x="14"
+            y="20"
+            width="16"
+            height="12"
+            rx="2"
+            fill="#10b981"
+          />
+
+          {/* Lock shackle */}
           <path
-            d="M12 16h16M12 20h16M12 24h12"
+            d="M17 20v-4a5 5 0 0 1 10 0v4"
             stroke="#10b981"
-            strokeWidth="2"
+            strokeWidth="2.5"
+            fill="none"
             strokeLinecap="round"
-            opacity="0.9"
           />
-          {/* Checkmark */}
-          <path
-            d="M15 20l3 3 7-7"
-            stroke="#ffffff"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+
+          {/* Keyhole */}
+          <circle cx="22" cy="25" r="2" fill="#022c22" />
+          <path d="M22 26v3" stroke="#022c22" strokeWidth="2" strokeLinecap="round" />
         </g>
 
-        {/* Text: SecureSiteScan */}
+        {/* Text: SecureSiteScan.com */}
         <text
-          x="46"
-          y="26"
-          fontFamily="system-ui, -apple-system, sans-serif"
-          fontWeight="600"
-          fontSize="18"
-          fill="#ffffff"
+          x="50"
+          y="29"
+          fontFamily="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+          fontWeight="700"
+          fontSize="20"
+          letterSpacing="-0.5"
         >
-          Secure
+          <tspan fill="#ffffff">Secure</tspan>
           <tspan fill="#10b981">Site</tspan>
           <tspan fill="#ffffff">Scan</tspan>
+          <tspan fill="#6b7280" fontSize="16" fontWeight="500">.com</tspan>
         </text>
 
         {/* Gradients */}
         <defs>
-          <linearGradient id="shield-gradient" x1="20" y1="4" x2="20" y2="36" gradientUnits="userSpaceOnUse">
+          <linearGradient id="shield-bg" x1="22" y1="3" x2="22" y2="50" gradientUnits="userSpaceOnUse">
             <stop stopColor="#064e3b" />
             <stop offset="1" stopColor="#022c22" />
           </linearGradient>
-          <linearGradient id="border-gradient" x1="20" y1="4" x2="20" y2="36" gradientUnits="userSpaceOnUse">
+          <linearGradient id="shield-border" x1="22" y1="3" x2="22" y2="50" gradientUnits="userSpaceOnUse">
             <stop stopColor="#34d399" />
             <stop offset="1" stopColor="#059669" />
           </linearGradient>
@@ -85,51 +93,57 @@ export function Logo({ className = '', size = 'md' }: LogoProps) {
   );
 }
 
-export function LogoIcon({ className = '', size = 32 }: { className?: string; size?: number }) {
+export function LogoIcon({ className = '', size = 40 }: { className?: string; size?: number }) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 40 40"
+      viewBox="0 0 44 50"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      {/* Shield background */}
+      {/* Outer shield */}
       <path
-        d="M20 4L6 10v10c0 9.55 5.97 18.48 14 22 8.03-3.52 14-12.45 14-22V10L20 4z"
-        fill="url(#shield-gradient-icon)"
+        d="M22 3L5 10v12c0 11 7.2 21.3 17 25.5 9.8-4.2 17-14.5 17-25.5V10L22 3z"
+        fill="url(#shield-bg-icon)"
       />
-      {/* Shield border */}
       <path
-        d="M20 4L6 10v10c0 9.55 5.97 18.48 14 22 8.03-3.52 14-12.45 14-22V10L20 4z"
-        stroke="url(#border-gradient-icon)"
-        strokeWidth="1.5"
+        d="M22 3L5 10v12c0 11 7.2 21.3 17 25.5 9.8-4.2 17-14.5 17-25.5V10L22 3z"
+        stroke="url(#shield-border-icon)"
+        strokeWidth="2"
         fill="none"
       />
-      {/* Scan lines */}
-      <path
-        d="M12 16h16M12 20h16M12 24h12"
-        stroke="#10b981"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.9"
-      />
-      {/* Checkmark */}
-      <path
-        d="M15 20l3 3 7-7"
-        stroke="#ffffff"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+
+      {/* Lock body */}
+      <rect
+        x="14"
+        y="20"
+        width="16"
+        height="12"
+        rx="2"
+        fill="#10b981"
       />
 
+      {/* Lock shackle */}
+      <path
+        d="M17 20v-4a5 5 0 0 1 10 0v4"
+        stroke="#10b981"
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+      />
+
+      {/* Keyhole */}
+      <circle cx="22" cy="25" r="2" fill="#022c22" />
+      <path d="M22 26v3" stroke="#022c22" strokeWidth="2" strokeLinecap="round" />
+
       <defs>
-        <linearGradient id="shield-gradient-icon" x1="20" y1="4" x2="20" y2="36" gradientUnits="userSpaceOnUse">
+        <linearGradient id="shield-bg-icon" x1="22" y1="3" x2="22" y2="50" gradientUnits="userSpaceOnUse">
           <stop stopColor="#064e3b" />
           <stop offset="1" stopColor="#022c22" />
         </linearGradient>
-        <linearGradient id="border-gradient-icon" x1="20" y1="4" x2="20" y2="36" gradientUnits="userSpaceOnUse">
+        <linearGradient id="shield-border-icon" x1="22" y1="3" x2="22" y2="50" gradientUnits="userSpaceOnUse">
           <stop stopColor="#34d399" />
           <stop offset="1" stopColor="#059669" />
         </linearGradient>
