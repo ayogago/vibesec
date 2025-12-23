@@ -4,57 +4,70 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { LogOut, User, Settings, ChevronDown, LayoutDashboard, Shield } from 'lucide-react';
+import { LogOut, User, ChevronDown, LayoutDashboard, Settings } from 'lucide-react';
 
 const navigation = [
   { name: 'Features', href: '/#features' },
   { name: 'How It Works', href: '/how-it-works' },
   { name: 'Pricing', href: '/pricing' },
+  { name: 'About', href: '/about' },
 ];
 
-// Admin emails that have access to the admin dashboard
 const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
 
 export function Header() {
   const { data: session, status } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const isAdmin = session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
 
-  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800/50'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <nav className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <img
               src="/images/logo.png"
-              alt="SecureSiteScan.com"
-              className="h-[75px] w-auto"
+              alt="SecureSiteScan"
+              className="h-10 w-auto"
             />
           </Link>
 
-          {/* Desktop Navigation - Centered */}
-          <div className="hidden md:flex md:items-center md:gap-1 rounded-full bg-muted/50 backdrop-blur-sm px-1 py-1 border border-border/50">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex md:items-center md:gap-1">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="px-4 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground rounded-full hover:bg-background/80"
+                className="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
               >
                 {item.name}
               </Link>
@@ -63,79 +76,67 @@ export function Header() {
 
           {/* Desktop CTA / User Menu */}
           <div className="hidden md:flex md:items-center md:gap-3">
-            <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              <Link href="/about">About</Link>
-            </Button>
-
             {status === 'loading' ? (
-              <div className="h-9 w-24 animate-pulse bg-muted rounded-full" />
+              <div className="h-9 w-24 animate-pulse bg-zinc-800 rounded-lg" />
             ) : session ? (
               <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 rounded-full bg-muted/50 backdrop-blur-sm pl-1 pr-3 py-1 border border-border/50 hover:bg-muted/80 transition-colors"
+                  className="flex items-center gap-2 rounded-lg bg-zinc-900 px-3 py-2 border border-zinc-800 hover:border-zinc-700 transition-colors"
                 >
                   {session.user?.image ? (
                     <img
                       src={session.user.image}
                       alt={session.user.name || 'User'}
-                      className="h-7 w-7 rounded-full"
+                      className="h-6 w-6 rounded-full"
                     />
                   ) : (
-                    <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center">
-                      <User className="h-4 w-4 text-primary" />
+                    <div className="h-6 w-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <User className="h-3.5 w-3.5 text-emerald-400" />
                     </div>
                   )}
-                  <span className="text-sm font-medium max-w-[100px] truncate">
+                  <span className="text-sm text-zinc-300 max-w-[100px] truncate">
                     {session.user?.name?.split(' ')[0] || 'User'}
                   </span>
-                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 text-zinc-500 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {/* User Dropdown Menu */}
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-lg bg-popover/95 backdrop-blur-lg border border-border shadow-lg py-1">
-                    <div className="px-4 py-2 border-b border-border">
-                      <p className="text-sm font-medium">{session.user?.name}</p>
-                      <p className="text-xs text-muted-foreground truncate">{session.user?.email}</p>
+                  <div className="absolute right-0 mt-2 w-56 rounded-lg bg-zinc-900 border border-zinc-800 shadow-xl py-1 overflow-hidden">
+                    <div className="px-4 py-3 border-b border-zinc-800">
+                      <p className="text-sm font-medium text-white">{session.user?.name}</p>
+                      <p className="text-xs text-zinc-500 truncate">{session.user?.email}</p>
                     </div>
 
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <LayoutDashboard className="h-4 w-4" />
-                      Dashboard
-                    </Link>
-
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                      onClick={() => setUserMenuOpen(false)}
-                    >
-                      <Shield className="h-4 w-4" />
-                      My Scans
-                    </Link>
-
-                    {isAdmin && (
+                    <div className="py-1">
                       <Link
-                        href="/admin"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                        href="/dashboard"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
                         onClick={() => setUserMenuOpen(false)}
                       >
-                        <Settings className="h-4 w-4" />
-                        Admin Dashboard
+                        <LayoutDashboard className="h-4 w-4 text-zinc-500" />
+                        Dashboard
                       </Link>
-                    )}
 
-                    <div className="border-t border-border mt-1 pt-1">
+                      {isAdmin && (
+                        <Link
+                          href="/admin"
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Settings className="h-4 w-4 text-zinc-500" />
+                          Admin Dashboard
+                        </Link>
+                      )}
+                    </div>
+
+                    <div className="border-t border-zinc-800 py-1">
                       <button
                         onClick={() => {
                           setUserMenuOpen(false);
                           signOut({ callbackUrl: '/' });
                         }}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-muted transition-colors w-full text-left"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-zinc-800 transition-colors w-full text-left"
                       >
                         <LogOut className="h-4 w-4" />
                         Sign Out
@@ -146,10 +147,10 @@ export function Header() {
               </div>
             ) : (
               <>
-                <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                <Button asChild variant="ghost" size="sm" className="text-zinc-400 hover:text-white hover:bg-transparent">
                   <Link href="/login">Sign In</Link>
                 </Button>
-                <Button asChild size="sm" className="rounded-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 px-4">
+                <Button asChild size="sm" className="rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4">
                   <Link href="/signup">Get Started</Link>
                 </Button>
               </>
@@ -159,7 +160,7 @@ export function Header() {
           {/* Mobile menu button */}
           <button
             type="button"
-            className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <span className="sr-only">Open main menu</span>
@@ -178,10 +179,10 @@ export function Header() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border/50">
+        <div className="md:hidden bg-zinc-950 border-b border-zinc-800">
           <div className="px-4 py-4 space-y-1">
             {session && (
-              <div className="flex items-center gap-3 px-4 py-3 mb-2 bg-muted/50 rounded-lg">
+              <div className="flex items-center gap-3 px-4 py-3 mb-3 bg-zinc-900 rounded-lg border border-zinc-800">
                 {session.user?.image ? (
                   <img
                     src={session.user.image}
@@ -189,13 +190,13 @@ export function Header() {
                     className="h-10 w-10 rounded-full"
                   />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <User className="h-5 w-5 text-primary" />
+                  <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                    <User className="h-5 w-5 text-emerald-400" />
                   </div>
                 )}
                 <div>
-                  <p className="font-medium">{session.user?.name}</p>
-                  <p className="text-xs text-muted-foreground">{session.user?.email}</p>
+                  <p className="font-medium text-white">{session.user?.name}</p>
+                  <p className="text-xs text-zinc-500">{session.user?.email}</p>
                 </div>
               </div>
             )}
@@ -204,25 +205,18 @@ export function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="block rounded-lg px-4 py-2.5 text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="block rounded-lg px-4 py-2.5 text-base text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
-            <Link
-              href="/about"
-              className="block rounded-lg px-4 py-2.5 text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              About
-            </Link>
 
             {session && (
               <>
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-base text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <LayoutDashboard className="h-4 w-4" />
@@ -231,7 +225,7 @@ export function Header() {
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-base text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <Settings className="h-4 w-4" />
@@ -241,7 +235,7 @@ export function Header() {
               </>
             )}
 
-            <div className="pt-3 space-y-2">
+            <div className="pt-4 border-t border-zinc-800 mt-4">
               {session ? (
                 <Button
                   onClick={() => {
@@ -249,17 +243,24 @@ export function Header() {
                     signOut({ callbackUrl: '/' });
                   }}
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-white"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
                 </Button>
               ) : (
-                <Button asChild className="w-full rounded-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white">
-                  <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                    Get Started
-                  </Link>
-                </Button>
+                <div className="space-y-2">
+                  <Button asChild variant="outline" className="w-full border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-white">
+                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button asChild className="w-full bg-emerald-500 hover:bg-emerald-600 text-white">
+                    <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                      Get Started
+                    </Link>
+                  </Button>
+                </div>
               )}
             </div>
           </div>

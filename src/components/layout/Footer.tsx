@@ -5,95 +5,128 @@ const footerLinks = {
     { name: 'Features', href: '/#features' },
     { name: 'How It Works', href: '/how-it-works' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Scan Now', href: '/#scanner' },
+  ],
+  resources: [
+    { name: 'Documentation', href: '/docs' },
+    { name: 'Security Guide', href: '/security-guide' },
+    { name: 'API Reference', href: '/api-docs' },
+    { name: 'Changelog', href: '/changelog' },
   ],
   company: [
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Careers', href: '/careers' },
   ],
   legal: [
-    { name: 'Privacy', href: '/privacy' },
-    { name: 'Terms', href: '/terms' },
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Security', href: '/security' },
   ],
 };
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/50 bg-background/50">
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10">
+    <footer className="border-t border-zinc-800 bg-zinc-950">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
           {/* Brand */}
-          <div className="max-w-xs">
+          <div className="col-span-2">
             <Link href="/" className="flex items-center">
               <img
                 src="/images/logo.png"
-                alt="SecureSiteScan.com"
-                className="h-[75px] w-auto"
+                alt="SecureSiteScan"
+                className="h-8 w-auto"
               />
             </Link>
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Security scanning for AI-generated apps. Catch vulnerabilities before they catch you.
+            <p className="mt-4 text-sm text-zinc-500 leading-relaxed max-w-xs">
+              Security scanning for AI-generated code. Find vulnerabilities before you deploy.
             </p>
+            <div className="mt-6 flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                All systems operational
+              </span>
+            </div>
           </div>
 
-          {/* Links */}
-          <div className="flex flex-wrap gap-12 md:gap-16">
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Product</h3>
-              <ul className="space-y-2">
-                {footerLinks.product.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Product */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-4">Product</h3>
+            <ul className="space-y-3">
+              {footerLinks.product.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-zinc-500 hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Company</h3>
-              <ul className="space-y-2">
-                {footerLinks.company.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Resources */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-4">Resources</h3>
+            <ul className="space-y-3">
+              {footerLinks.resources.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-zinc-500 hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            <div>
-              <h3 className="text-sm font-semibold mb-3">Legal</h3>
-              <ul className="space-y-2">
-                {footerLinks.legal.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Company */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-4">Company</h3>
+            <ul className="space-y-3">
+              {footerLinks.company.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-zinc-500 hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-4">Legal</h3>
+            <ul className="space-y-3">
+              {footerLinks.legal.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-zinc-500 hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
         {/* Bottom */}
-        <div className="mt-10 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
+        <div className="mt-12 pt-8 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-zinc-600">
             &copy; {new Date().getFullYear()} SecureSiteScan. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Built for the vibe coding era
+          <p className="text-xs text-zinc-600">
+            Built for the AI code generation era
           </p>
         </div>
       </div>
