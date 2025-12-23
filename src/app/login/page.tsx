@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
-import { validateCredentials, setCurrentUser } from "@/lib/users"
+import { validateCredentials, setCurrentUser, initializeAdminUser } from "@/lib/users"
 import { SubscriptionTier } from "@/lib/subscription"
 
 function LoginContent() {
@@ -25,6 +25,11 @@ function LoginContent() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  // Initialize admin user on page load
+  useEffect(() => {
+    initializeAdminUser()
+  }, [])
 
   useEffect(() => {
     if (status === "authenticated") {
