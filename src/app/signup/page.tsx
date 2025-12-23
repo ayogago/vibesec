@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { Badge } from "@/components/ui/badge"
-import { Github, Shield, Loader2, Mail, Lock, User, Check, ArrowRight } from "lucide-react"
+import { Shield, Loader2, Mail, Lock, User, Check, ArrowRight } from "lucide-react"
 import { createUser, findUserByEmail, setCurrentUser } from "@/lib/users"
 import { SubscriptionTier, SUBSCRIPTION_LIMITS } from "@/lib/subscription"
 
@@ -107,13 +107,6 @@ function SignupContent() {
     } else {
       router.push(callbackUrl)
     }
-  }
-
-  const handleGitHubSignup = () => {
-    const redirectUrl = selectedPlan && selectedPlan !== "free" && selectedPlan !== "anonymous"
-      ? `/checkout?plan=${selectedPlan}`
-      : callbackUrl
-    signIn("github", { callbackUrl: redirectUrl })
   }
 
   if (status === "loading") {
@@ -261,25 +254,6 @@ function SignupContent() {
                   )}
                 </Button>
               </form>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-                </div>
-              </div>
-
-              <Button
-                onClick={handleGitHubSignup}
-                variant="outline"
-                className="w-full"
-                disabled={loading}
-              >
-                <Github className="mr-2 h-5 w-5" />
-                Sign up with GitHub
-              </Button>
 
               <div className="text-center text-sm text-muted-foreground mt-4">
                 Already have an account?{" "}

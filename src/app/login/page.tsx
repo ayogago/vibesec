@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
-import { Github, Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
+import { Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
 import { validateCredentials, setCurrentUser } from "@/lib/users"
 import { SubscriptionTier } from "@/lib/subscription"
 
@@ -80,13 +80,6 @@ function LoginContent() {
     } else {
       router.push(callbackUrl)
     }
-  }
-
-  const handleGitHubSignIn = () => {
-    const redirectUrl = selectedPlan && selectedPlan !== "free" && selectedPlan !== "anonymous"
-      ? `/checkout?plan=${selectedPlan}`
-      : callbackUrl
-    signIn("github", { callbackUrl: redirectUrl })
   }
 
   if (status === "loading") {
@@ -196,25 +189,6 @@ function LoginContent() {
               </Button>
             </form>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-              </div>
-            </div>
-
-            <Button
-              onClick={handleGitHubSignIn}
-              variant="outline"
-              className="w-full"
-              disabled={loading}
-            >
-              <Github className="mr-2 h-5 w-5" />
-              Continue with GitHub
-            </Button>
-
             <div className="text-center text-sm text-muted-foreground mt-4">
               Don&apos;t have an account?{" "}
               <Link
@@ -223,25 +197,6 @@ function LoginContent() {
               >
                 Sign up
               </Link>
-            </div>
-
-            {/* GitHub Benefits */}
-            <div className="mt-6 pt-6 border-t border-border">
-              <p className="text-xs text-muted-foreground mb-3">Sign in with GitHub to:</p>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-green-500 text-xs">✓</span>
-                  </div>
-                  <p>Access repositories directly from dashboard</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-green-500 text-xs">✓</span>
-                  </div>
-                  <p>Scan private repositories securely</p>
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>

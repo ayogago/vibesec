@@ -23,57 +23,21 @@ export async function GET() {
   try {
     const session = await auth()
 
-    if (!session || !session.accessToken) {
+    if (!session) {
       return NextResponse.json(
-        { error: "Unauthorized. Please sign in with GitHub." },
+        { error: "Unauthorized. Please sign in." },
         { status: 401 }
       )
     }
 
-    // Fetch user's repos from GitHub
-    const response = await fetch(
-      "https://api.github.com/user/repos?sort=updated&per_page=100&type=all",
-      {
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-      }
-    )
-
-    if (!response.ok) {
-      const error = await response.text()
-      console.error("GitHub API error:", error)
-      return NextResponse.json(
-        { error: "Failed to fetch repositories from GitHub" },
-        { status: response.status }
-      )
-    }
-
-    const repos: GitHubRepo[] = await response.json()
-
-    // Return repos sorted by most recently updated
+    // GitHub integration has been removed
+    // Return empty repos array
     return NextResponse.json({
-      repos: repos.map((repo) => ({
-        id: repo.id,
-        name: repo.name,
-        full_name: repo.full_name,
-        description: repo.description,
-        private: repo.private,
-        html_url: repo.html_url,
-        updated_at: repo.updated_at,
-        language: repo.language,
-        default_branch: repo.default_branch,
-        stargazers_count: repo.stargazers_count,
-        forks_count: repo.forks_count,
-        owner: {
-          login: repo.owner.login,
-          avatar_url: repo.owner.avatar_url,
-        },
-      })),
+      repos: [],
+      message: "GitHub integration is not available. Please use URL-based scanning instead."
     })
   } catch (error) {
-    console.error("Error fetching repos:", error)
+    console.error("Error:", error)
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { Github, LogOut, User, Settings, Shield, ChevronDown, LayoutDashboard } from 'lucide-react';
+import { LogOut, User, Settings, ChevronDown, LayoutDashboard, Shield } from 'lucide-react';
 
 const navigation = [
   { name: 'Features', href: '/#features' },
@@ -164,12 +164,7 @@ export function Header() {
                   <Link href="/login">Sign In</Link>
                 </Button>
                 <Button asChild size="sm" className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 px-4">
-                  <Link href="/login">
-                    <span className="flex items-center gap-1.5">
-                      <Github className="h-4 w-4" />
-                      Sign in with GitHub
-                    </span>
-                  </Link>
+                  <Link href="/signup">Get Started</Link>
                 </Button>
               </>
             )}
@@ -275,9 +270,8 @@ export function Header() {
                 </Button>
               ) : (
                 <Button asChild className="w-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Github className="h-4 w-4 mr-2" />
-                    Sign in with GitHub
+                  <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                    Get Started
                   </Link>
                 </Button>
               )}

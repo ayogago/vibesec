@@ -172,7 +172,6 @@ export default function DashboardPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           repoUrl: repo.html_url,
-          githubToken: session?.accessToken,
         }),
       })
 
@@ -438,12 +437,12 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            {/* Note for non-GitHub users */}
-            {session?.user?.provider !== "github" && repos.length === 0 && !loading && (
+            {/* Note for users */}
+            {repos.length === 0 && !loading && (
               <div className="mb-6 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
                 <p className="text-sm">
-                  <strong>Tip:</strong> Sign in with GitHub to see your repositories here, or scan any public repo by going to the{" "}
-                  <Link href="/" className="underline">homepage</Link>.
+                  <strong>Tip:</strong> Scan any public repository by going to the{" "}
+                  <Link href="/" className="underline">homepage</Link> and entering a GitHub URL.
                 </p>
               </div>
             )}
