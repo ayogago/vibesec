@@ -29,7 +29,7 @@ import {
 } from "lucide-react"
 
 // Admin emails that have access to the admin dashboard
-const ADMIN_EMAILS = ["admin@securesitescan.com", "owner@securesitescan.com"]
+const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"]
 
 interface UserData {
   id: string

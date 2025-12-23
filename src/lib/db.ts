@@ -382,7 +382,7 @@ export async function initializeAdminUser(): Promise<void> {
   try {
     if (!isDatabaseConfigured()) return;
 
-    const adminEmail = 'admin@securesitescan.com';
+    const adminEmail = 'info@securesitescan.com';
     const existing = await findUserByEmail(adminEmail);
 
     if (!existing) {

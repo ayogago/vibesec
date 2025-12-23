@@ -5,7 +5,7 @@ import { SubscriptionTier } from "./subscription"
 
 // Admin credentials - these can be used to login to the admin dashboard
 export const ADMIN_CREDENTIALS = {
-  email: "admin@securesitescan.com",
+  email: "info@securesitescan.com",
   password: "admin123",
   name: "SecureSiteScan Admin",
 }
