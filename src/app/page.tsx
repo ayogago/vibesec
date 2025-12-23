@@ -133,17 +133,27 @@ export default function HomePage() {
       <main>
         {/* Hero Section - Centered Chat Interface */}
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+          {/* Hero background image */}
+          <div
+            className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: 'url(/images/hero-bg.jpg)',
+            }}
+          />
+          {/* Dark overlay for readability */}
+          <div className="absolute inset-0 -z-15 bg-background/80" />
+
           {/* Animated background */}
           <div className="absolute inset-0 -z-10">
             {/* 3D Globe - Low opacity futuristic AI visualization */}
-            <div className="absolute inset-0 opacity-30 pointer-events-none">
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
               <Globe className="w-full h-full" />
             </div>
 
-            {/* Gradient orbs */}
-            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse-glow" />
-            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '1s' }} />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[140px]" />
+            {/* Gradient orbs - changed to green theme */}
+            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-[120px] animate-pulse-glow" />
+            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-teal-500/20 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-green-500/10 rounded-full blur-[140px]" />
 
             {/* Grid pattern */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.5_0_0_/_0.03)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.5_0_0_/_0.03)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
@@ -171,13 +181,13 @@ export default function HomePage() {
               <div id="scanner" className="mx-auto max-w-2xl">
                 <div className="relative">
                   {/* Glow effect behind input */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity" />
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity" />
 
                   <form onSubmit={handleSubmit} className="relative">
                     <div className="relative bg-card rounded-2xl border border-border/50 shadow-2xl shadow-black/20 overflow-hidden">
                       {/* Input area */}
                       <div className="flex items-center gap-3 p-4">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 flex items-center justify-center">
                           <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                           </svg>
@@ -196,7 +206,7 @@ export default function HomePage() {
                         <Button
                           type="submit"
                           size="lg"
-                          className="flex-shrink-0 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 px-6"
+                          className="flex-shrink-0 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-medium shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 px-6"
                           disabled={isLoading}
                         >
                           {isLoading ? (
@@ -261,7 +271,7 @@ export default function HomePage() {
                                 href="https://github.com/settings/tokens/new?scopes=repo&description=SecureSiteScan%20Scanner"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-400 hover:text-blue-300 underline-offset-2 hover:underline"
+                                className="text-emerald-400 hover:text-emerald-300 underline-offset-2 hover:underline"
                               >
                                 Create a token
                               </a>{' '}
@@ -317,6 +327,48 @@ export default function HomePage() {
               </p>
             </div>
 
+            {/* Feature image showcase */}
+            <div className="mb-16 relative">
+              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] group">
+                  <img
+                    src="/images/security-shield.jpg"
+                    alt="Security Protection"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h4 className="text-lg font-semibold text-white">Advanced Protection</h4>
+                    <p className="text-sm text-white/70">Multi-layer security scanning</p>
+                  </div>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] group">
+                  <img
+                    src="/images/code-screen.jpg"
+                    alt="Code Analysis"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h4 className="text-lg font-semibold text-white">Code Analysis</h4>
+                    <p className="text-sm text-white/70">Deep vulnerability detection</p>
+                  </div>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] group">
+                  <img
+                    src="/images/cyber-security.jpg"
+                    alt="Cyber Security"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h4 className="text-lg font-semibold text-white">Cyber Defense</h4>
+                    <p className="text-sm text-white/70">Stay ahead of threats</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
               {features.map((feature) => (
                 <div
@@ -368,7 +420,7 @@ export default function HomePage() {
                   {index < 2 && (
                     <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-gradient-to-r from-border to-transparent" />
                   )}
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-border/50 mb-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-border/50 mb-4">
                     <span className="text-xl font-bold gradient-text">{item.step}</span>
                   </div>
                   <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
@@ -383,7 +435,7 @@ export default function HomePage() {
         <section className="py-24 relative overflow-hidden">
           {/* Background effect */}
           <div className="absolute inset-0 -z-10">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 rounded-full blur-[100px]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-emerald-500/20 via-green-500/20 to-teal-500/20 rounded-full blur-[100px]" />
           </div>
 
           <div className="container mx-auto px-4">
@@ -397,7 +449,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   size="lg"
-                  className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 px-8"
+                  className="rounded-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white shadow-lg shadow-emerald-500/25 px-8"
                   asChild
                 >
                   <Link href="#scanner">
@@ -412,7 +464,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-full px-8"
+                  className="rounded-full px-8 border-border hover:bg-muted hover:text-foreground"
                   asChild
                 >
                   <Link href="/pricing">View Pricing</Link>
