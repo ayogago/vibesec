@@ -383,8 +383,12 @@ export async function initializeAdminUser(): Promise<void> {
     const existing = await findUserByEmail(adminEmail);
 
     if (!existing) {
-      // Use environment variable for admin password
-      const adminPassword = process.env.ADMIN_PASSWORD || 'SS2025scan$';
+      // Require environment variable for admin password - never use hardcoded fallback
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      if (!adminPassword) {
+        // Skip admin creation if password not configured
+        return;
+      }
       const passwordHash = await bcrypt.hash(adminPassword, 10);
       const client = requireDb();
 
