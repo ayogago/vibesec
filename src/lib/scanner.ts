@@ -2935,8 +2935,6 @@ export async function scanRepository(
     .filter((f) => (f.size || 0) <= MAX_FILE_SIZE)
     .slice(0, MAX_TOTAL_FILES);
 
-  console.log(`[SecureSiteScan] Scanning ${scannableFiles.length} files from ${owner}/${repo}`);
-
   const findings: Finding[] = [];
   let totalBytes = 0;
   let filesScanned = 0;
@@ -2953,7 +2951,6 @@ export async function scanRepository(
 
     filesScanned++;
     totalBytes += content.length;
-    console.log(`[SecureSiteScan] Scanning: ${file.path} (${content.length} bytes)`);
 
     // Run all security checks
     findings.push(...checkSupabaseRLS(content, file.path));
@@ -2999,10 +2996,6 @@ export async function scanRepository(
     findings.push(...checkUnsafeDeserialization(content, file.path));
     findings.push(...checkClickjacking(content, file.path));
   }
-
-  console.log(`[SecureSiteScan] Total findings: ${findings.length}`);
-  console.log(`[SecureSiteScan] Files scanned: ${filesScanned}`);
-  console.log(`[SecureSiteScan] Score: ${calculateSecurityScore(findings)}`);
 
   return {
     repoName: `${owner}/${repo}`,
