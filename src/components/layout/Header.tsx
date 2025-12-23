@@ -44,7 +44,7 @@ export function Header() {
             <img
               src="/images/logo.png"
               alt="SecureSiteScan.com"
-              className="h-[200px] w-auto"
+              className="h-[75px] w-auto"
             />
           </Link>
 

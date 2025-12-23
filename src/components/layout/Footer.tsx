@@ -27,7 +27,7 @@ export function Footer() {
               <img
                 src="/images/logo.png"
                 alt="SecureSiteScan.com"
-                className="h-[200px] w-auto"
+                className="h-[75px] w-auto"
               />
             </Link>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
