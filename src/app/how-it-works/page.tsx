@@ -99,7 +99,7 @@ export default function HowItWorksPage() {
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
                 How{' '}
                 <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
-                  VibeSec
+                  SecureSiteScan
                 </span>{' '}
                 Works
               </h1>
@@ -160,7 +160,7 @@ export default function HowItWorksPage() {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-center">What We Check</h2>
               <p className="mt-4 text-center text-muted-foreground max-w-2xl mx-auto">
-                VibeSec runs 40+ security checks across 6 major categories, covering the most common vulnerabilities found in AI-generated code.
+                SecureSiteScan runs 40+ security checks across 6 major categories, covering the most common vulnerabilities found in AI-generated code.
               </p>
 
               <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -191,7 +191,7 @@ export default function HowItWorksPage() {
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl font-bold text-center">Under the Hood</h2>
               <p className="mt-4 text-center text-muted-foreground max-w-2xl mx-auto">
-                VibeSec uses static analysis to scan your code without executing it. Here&apos;s how we keep your code safe while analyzing it.
+                SecureSiteScan uses static analysis to scan your code without executing it. Here&apos;s how we keep your code safe while analyzing it.
               </p>
 
               <div className="mt-12 grid md:grid-cols-2 gap-8">
@@ -264,7 +264,7 @@ export default function HowItWorksPage() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold">Ready to try it?</h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-              Paste your GitHub URL and see VibeSec in action. It takes less than 10 seconds.
+              Paste your GitHub URL and see SecureSiteScan in action. It takes less than 10 seconds.
             </p>
             <Button asChild size="lg" className="mt-8 bg-green-600 hover:bg-green-700">
               <Link href="/#scanner">Scan Now</Link>

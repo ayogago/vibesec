@@ -3,8 +3,8 @@ import { SessionProvider } from "@/components/providers/SessionProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VibeSec - Security Scanner for AI-Generated Apps",
-  description: "Don't let your Vibe Code leak your data. One-click security scanning for apps built with Bolt.new, Lovable, v0, and Claude Code.",
+  title: "SecureSiteScan.com - Security Scanner for AI-Generated Apps",
+  description: "Protect your AI-generated apps from security vulnerabilities. One-click security scanning for apps built with Bolt.new, Lovable, v0, and Claude Code.",
 };
 
 export default function RootLayout({

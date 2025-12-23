@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { Github, LogOut, User, Settings, Shield, ChevronDown, LayoutDashboard } from 'lucide-react';
+import { LogOut, User, Settings, ChevronDown, LayoutDashboard, Shield } from 'lucide-react';
 
 const navigation = [
   { name: 'Features', href: '/#features' },
@@ -13,7 +13,7 @@ const navigation = [
 ];
 
 // Admin emails that have access to the admin dashboard
-const ADMIN_EMAILS = ["admin@vibesec.dev", "owner@vibesec.dev"];
+const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
 
 export function Header() {
   const { data: session, status } = useSession();
@@ -40,26 +40,12 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <nav className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="relative flex h-8 w-8 items-center justify-center">
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 opacity-80 blur-sm" />
-              <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600">
-                <svg
-                  className="h-4 w-4 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <span className="text-lg font-semibold text-foreground">VibeSec</span>
+          <Link href="/" className="flex items-center">
+            <img
+              src="/images/logo.png"
+              alt="SecureSiteScan.com"
+              className="h-8 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation - Centered */}
@@ -164,12 +150,7 @@ export function Header() {
                   <Link href="/login">Sign In</Link>
                 </Button>
                 <Button asChild size="sm" className="rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 px-4">
-                  <Link href="/login">
-                    <span className="flex items-center gap-1.5">
-                      <Github className="h-4 w-4" />
-                      Sign in with GitHub
-                    </span>
-                  </Link>
+                  <Link href="/signup">Get Started</Link>
                 </Button>
               </>
             )}
@@ -275,9 +256,8 @@ export function Header() {
                 </Button>
               ) : (
                 <Button asChild className="w-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Github className="h-4 w-4 mr-2" />
-                    Sign in with GitHub
+                  <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                    Get Started
                   </Link>
                 </Button>
               )}

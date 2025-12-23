@@ -52,7 +52,7 @@ export default function ContactPage() {
                 </span>
               </h1>
               <p className="mt-6 text-lg text-muted-foreground">
-                Have questions about VibeSec? Want to discuss enterprise features? We&apos;d love to hear from you.
+                Have questions about SecureSiteScan? Want to discuss enterprise features? We&apos;d love to hear from you.
               </p>
             </div>
           </div>
@@ -77,8 +77,8 @@ export default function ContactPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <a href="mailto:hello@vibesec.dev" className="text-green-500 hover:underline">
-                      hello@vibesec.dev
+                    <a href="mailto:hello@securesitescan.com" className="text-green-500 hover:underline">
+                      hello@securesitescan.com
                     </a>
                   </CardContent>
                 </Card>
@@ -96,8 +96,8 @@ export default function ContactPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <a href="mailto:sales@vibesec.dev" className="text-green-500 hover:underline">
-                      sales@vibesec.dev
+                    <a href="mailto:sales@securesitescan.com" className="text-green-500 hover:underline">
+                      sales@securesitescan.com
                     </a>
                   </CardContent>
                 </Card>
@@ -125,7 +125,7 @@ export default function ContactPage() {
                   <h3 className="font-semibold mb-4">Follow Us</h3>
                   <div className="flex gap-4">
                     <a
-                      href="https://twitter.com/vibesec"
+                      href="https://twitter.com/securesitescan"
                       className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted hover:bg-muted/80 transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -135,7 +135,7 @@ export default function ContactPage() {
                       </svg>
                     </a>
                     <a
-                      href="https://github.com/vibesec"
+                      href="https://github.com/securesitescan"
                       className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted hover:bg-muted/80 transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -145,7 +145,7 @@ export default function ContactPage() {
                       </svg>
                     </a>
                     <a
-                      href="https://linkedin.com/company/vibesec"
+                      href="https://linkedin.com/company/securesitescan"
                       className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted hover:bg-muted/80 transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"

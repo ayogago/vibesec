@@ -23,26 +23,12 @@ export function Footer() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10">
           {/* Brand */}
           <div className="max-w-xs">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="relative flex h-8 w-8 items-center justify-center">
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 opacity-80 blur-sm" />
-                <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600">
-                  <svg
-                    className="h-4 w-4 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <span className="text-lg font-semibold">VibeSec</span>
+            <Link href="/" className="flex items-center">
+              <img
+                src="/images/logo.png"
+                alt="SecureSiteScan.com"
+                className="h-8 w-auto"
+              />
             </Link>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
               Security scanning for AI-generated apps. Catch vulnerabilities before they catch you.
@@ -50,7 +36,7 @@ export function Footer() {
             {/* Social links */}
             <div className="mt-4 flex gap-3">
               <a
-                href="https://twitter.com/vibesec"
+                href="https://twitter.com/securesitescan"
                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -61,7 +47,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://github.com/vibesec"
+                href="https://github.com/securesitescan"
                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -129,7 +115,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-10 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} VibeSec. All rights reserved.
+            &copy; {new Date().getFullYear()} SecureSiteScan. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Built for the vibe coding era

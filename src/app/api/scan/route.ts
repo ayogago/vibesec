@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            'This repo appears to be private or inaccessible. For now, VibeSec only supports public repositories.',
+            'This repo appears to be private or inaccessible. For now, SecureSiteScan only supports public repositories.',
         },
         { status: 404 }
       );

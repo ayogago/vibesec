@@ -61,7 +61,7 @@ export function SignupModal({ isOpen, onClose, onSuccess, mode = 'signup' }: Sig
           <CardDescription>
             {mode === 'upgrade'
               ? 'Sign up for free to see 2 findings, or upgrade for unlimited access'
-              : 'Get started with VibeSec - no credit card required'
+              : 'Get started with SecureSiteScan - no credit card required'
             }
           </CardDescription>
         </CardHeader>

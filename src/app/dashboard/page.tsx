@@ -130,7 +130,7 @@ export default function DashboardPage() {
     } else {
       // Fallback to localStorage for non-credential users
       if (typeof window !== "undefined") {
-        const history = localStorage.getItem("vibesec_scan_history")
+        const history = localStorage.getItem("securesitescan_scan_history")
         if (history) {
           try {
             setScanHistory(JSON.parse(history))
@@ -138,7 +138,7 @@ export default function DashboardPage() {
             setScanHistory([])
           }
         }
-        const sub = localStorage.getItem("vibesec_subscription") as SubscriptionTier
+        const sub = localStorage.getItem("securesitescan_subscription") as SubscriptionTier
         if (sub) {
           setUserSubscription(sub)
         }
@@ -159,7 +159,7 @@ export default function DashboardPage() {
       }
       const newHistory = [newScan, ...scanHistory.filter(h => h.repoName !== scan.repoName)].slice(0, 50)
       setScanHistory(newHistory)
-      localStorage.setItem("vibesec_scan_history", JSON.stringify(newHistory))
+      localStorage.setItem("securesitescan_scan_history", JSON.stringify(newHistory))
     }
   }
 
@@ -172,7 +172,6 @@ export default function DashboardPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           repoUrl: repo.html_url,
-          githubToken: session?.accessToken,
         }),
       })
 
@@ -438,12 +437,12 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            {/* Note for non-GitHub users */}
-            {session?.user?.provider !== "github" && repos.length === 0 && !loading && (
+            {/* Note for users */}
+            {repos.length === 0 && !loading && (
               <div className="mb-6 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
                 <p className="text-sm">
-                  <strong>Tip:</strong> Sign in with GitHub to see your repositories here, or scan any public repo by going to the{" "}
-                  <Link href="/" className="underline">homepage</Link>.
+                  <strong>Tip:</strong> Scan any public repository by going to the{" "}
+                  <Link href="/" className="underline">homepage</Link> and entering a GitHub URL.
                 </p>
               </div>
             )}
@@ -702,7 +701,7 @@ export default function DashboardPage() {
                   <Crown className={userSubscription === "pro" ? "h-5 w-5 text-purple-500" : userSubscription === "starter" ? "h-5 w-5 text-blue-500" : "h-5 w-5 text-muted-foreground"} />
                   Current Plan
                 </CardTitle>
-                <CardDescription>Manage your VibeSec subscription</CardDescription>
+                <CardDescription>Manage your SecureSiteScan subscription</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-start justify-between gap-4">
