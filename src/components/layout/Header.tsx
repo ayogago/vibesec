@@ -54,7 +54,7 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <nav className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Logo size="md" />
+          <Logo size="lg" />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:gap-1">
