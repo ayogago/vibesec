@@ -135,13 +135,14 @@ export default function HomePage() {
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
           {/* Hero background image */}
           <div
-            className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: 'url(/images/hero-bg.jpg)',
+              zIndex: -30,
             }}
           />
           {/* Dark overlay for readability */}
-          <div className="absolute inset-0 -z-15 bg-background/80" />
+          <div className="absolute inset-0 bg-background/50" style={{ zIndex: -25 }} />
 
           {/* Animated background */}
           <div className="absolute inset-0 -z-10">
