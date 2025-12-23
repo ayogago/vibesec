@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Logo } from '@/components/Logo';
 
 const footerLinks = {
   product: [
@@ -8,21 +9,18 @@ const footerLinks = {
     { name: 'Scan Now', href: '/#scanner' },
   ],
   resources: [
-    { name: 'Documentation', href: '/docs' },
-    { name: 'Security Guide', href: '/security-guide' },
-    { name: 'API Reference', href: '/api-docs' },
-    { name: 'Changelog', href: '/changelog' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Results', href: '/results' },
+    { name: 'Checkout', href: '/checkout' },
   ],
   company: [
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Careers', href: '/careers' },
   ],
   legal: [
     { name: 'Privacy Policy', href: '/privacy' },
     { name: 'Terms of Service', href: '/terms' },
-    { name: 'Security', href: '/security' },
+    { name: 'Cookie Policy', href: '/cookies' },
   ],
 };
 
@@ -33,13 +31,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
           {/* Brand */}
           <div className="col-span-2">
-            <Link href="/" className="flex items-center">
-              <img
-                src="/images/logo.png"
-                alt="SecureSiteScan"
-                className="h-8 w-auto"
-              />
-            </Link>
+            <Logo size="md" />
             <p className="mt-4 text-sm text-zinc-500 leading-relaxed max-w-xs">
               Security scanning for AI-generated code. Find vulnerabilities before you deploy.
             </p>
