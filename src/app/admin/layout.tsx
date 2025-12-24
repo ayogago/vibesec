@@ -55,7 +55,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
-        <main className="flex-1 flex items-center justify-center px-4">
+        <main className="flex-1 flex items-center justify-center px-4 pt-20">
           <Card className="w-full max-w-md p-8 text-center bg-card/50 backdrop-blur border-border/50">
             <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
               <Ban className="h-8 w-8 text-destructive" />
@@ -86,7 +86,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <div className="flex-1 flex">
+      <div className="flex-1 flex pt-20">
         {/* Sidebar */}
         <aside className="w-64 border-r border-border bg-card/30 backdrop-blur hidden md:block">
           <div className="p-4">
