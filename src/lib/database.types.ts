@@ -22,6 +22,8 @@ export interface Database {
           password_hash: string;
           subscription: SubscriptionTier;
           pending_plan: SubscriptionTier | null;
+          reset_token: string | null;
+          reset_token_expires: string | null;
           created_at: string;
           last_login_at: string | null;
           updated_at: string;
@@ -33,6 +35,8 @@ export interface Database {
           password_hash: string;
           subscription?: SubscriptionTier;
           pending_plan?: SubscriptionTier | null;
+          reset_token?: string | null;
+          reset_token_expires?: string | null;
           created_at?: string;
           last_login_at?: string | null;
           updated_at?: string;
@@ -44,6 +48,8 @@ export interface Database {
           password_hash?: string;
           subscription?: SubscriptionTier;
           pending_plan?: SubscriptionTier | null;
+          reset_token?: string | null;
+          reset_token_expires?: string | null;
           created_at?: string;
           last_login_at?: string | null;
           updated_at?: string;

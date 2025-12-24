@@ -19,10 +19,20 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     subscription subscription_tier DEFAULT 'free',
     pending_plan subscription_tier,
+    reset_token VARCHAR(255),
+    reset_token_expires TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     last_login_at TIMESTAMP WITH TIME ZONE,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add reset token columns if they don't exist (for existing databases)
+DO $$ BEGIN
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires TIMESTAMP WITH TIME ZONE;
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;
 
 -- Create index on email for faster lookups
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
