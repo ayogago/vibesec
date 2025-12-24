@@ -32,6 +32,9 @@ import {
   ExternalLink,
   TrendingUp,
   TrendingDown,
+  Settings,
+  KeyRound,
+  CheckCircle2,
 } from "lucide-react"
 import { getCurrentUser, getScanHistory, addScanToHistory, ScanHistoryItem } from "@/lib/users"
 import { SUBSCRIPTION_LIMITS, SubscriptionTier } from "@/lib/subscription"
@@ -64,8 +67,16 @@ export default function DashboardPage() {
   const [scanning, setScanning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [scanHistory, setScanHistory] = useState<ScanHistoryItem[]>([])
-  const [activeTab, setActiveTab] = useState<"repos" | "history" | "subscription">("repos")
+  const [activeTab, setActiveTab] = useState<"repos" | "history" | "subscription" | "settings">("repos")
   const [userSubscription, setUserSubscription] = useState<SubscriptionTier>("free")
+
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmNewPassword, setConfirmNewPassword] = useState("")
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [passwordError, setPasswordError] = useState("")
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -258,6 +269,57 @@ export default function DashboardPage() {
 
   const subscriptionLimits = SUBSCRIPTION_LIMITS[userSubscription]
 
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setPasswordError("")
+    setPasswordSuccess(false)
+    setPasswordLoading(true)
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      setPasswordError("All fields are required")
+      setPasswordLoading(false)
+      return
+    }
+
+    if (newPassword.length < 8) {
+      setPasswordError("New password must be at least 8 characters")
+      setPasswordLoading(false)
+      return
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError("New passwords do not match")
+      setPasswordLoading(false)
+      return
+    }
+
+    try {
+      const response = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to change password")
+      }
+
+      setPasswordSuccess(true)
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmNewPassword("")
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : "Failed to change password")
+    } finally {
+      setPasswordLoading(false)
+    }
+  }
+
   if (status === "loading") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -400,6 +462,14 @@ export default function DashboardPage() {
           >
             <CreditCard className="h-4 w-4" />
             Subscription
+          </Button>
+          <Button
+            variant={activeTab === "settings" ? "default" : "outline"}
+            onClick={() => setActiveTab("settings")}
+            className="gap-2"
+          >
+            <Settings className="h-4 w-4" />
+            Settings
           </Button>
         </div>
 
@@ -888,6 +958,141 @@ export default function DashboardPage() {
                     <span className="text-2xl font-bold">
                       {new Set(scanHistory.map(s => s.repoName)).size}
                     </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === "settings" && (
+          <div className="space-y-6">
+            {/* Change Password Card */}
+            <Card className="bg-card/50 backdrop-blur border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <KeyRound className="h-5 w-5 text-primary" />
+                  Change Password
+                </CardTitle>
+                <CardDescription>Update your account password</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {passwordSuccess ? (
+                  <div className="flex items-center gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <div>
+                      <p className="font-medium">Password changed successfully!</p>
+                      <p className="text-sm opacity-80">Your new password is now active.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <form onSubmit={handlePasswordChange} className="space-y-4 max-w-md">
+                    {passwordError && (
+                      <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                        {passwordError}
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      <label htmlFor="currentPassword" className="text-sm font-medium">
+                        Current Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="currentPassword"
+                          type="password"
+                          placeholder="Enter current password"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          className="pl-10"
+                          required
+                          autoComplete="current-password"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="newPassword" className="text-sm font-medium">
+                        New Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="newPassword"
+                          type="password"
+                          placeholder="Min. 8 characters"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="pl-10"
+                          required
+                          minLength={8}
+                          autoComplete="new-password"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="confirmNewPassword" className="text-sm font-medium">
+                        Confirm New Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="confirmNewPassword"
+                          type="password"
+                          placeholder="Confirm new password"
+                          value={confirmNewPassword}
+                          onChange={(e) => setConfirmNewPassword(e.target.value)}
+                          className="pl-10"
+                          required
+                          autoComplete="new-password"
+                        />
+                      </div>
+                    </div>
+
+                    <Button type="submit" disabled={passwordLoading}>
+                      {passwordLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Changing Password...
+                        </>
+                      ) : (
+                        "Change Password"
+                      )}
+                    </Button>
+                  </form>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Account Info Card */}
+            <Card className="bg-card/50 backdrop-blur border-border/50">
+              <CardHeader>
+                <CardTitle className="text-lg">Account Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between py-2 border-b border-border/50">
+                    <span className="text-sm text-muted-foreground">Email</span>
+                    <span className="text-sm font-medium">{session?.user?.email}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-border/50">
+                    <span className="text-sm text-muted-foreground">Name</span>
+                    <span className="text-sm font-medium">{session?.user?.name || "Not set"}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-muted-foreground">Subscription</span>
+                    <Badge className={
+                      userSubscription === "pro"
+                        ? "bg-gradient-to-r from-purple-500 to-pink-500"
+                        : userSubscription === "starter"
+                        ? "bg-blue-500"
+                        : "bg-muted"
+                    }>
+                      {subscriptionLimits.name}
+                    </Badge>
                   </div>
                 </div>
               </CardContent>
