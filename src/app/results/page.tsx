@@ -23,6 +23,127 @@ import {
   type SubscriptionTier,
 } from '@/lib/subscription';
 
+// Export functions
+function exportToJSON(result: ScanResult) {
+  const exportData = {
+    scanInfo: {
+      repoName: result.repoName,
+      repoUrl: result.repoUrl,
+      scannedAt: result.scannedAt,
+      filesScanned: result.filesScanned,
+      securityScore: result.securityScore,
+    },
+    summary: {
+      totalFindings: result.findings.length,
+      critical: result.findings.filter(f => f.severity === 'CRITICAL').length,
+      high: result.findings.filter(f => f.severity === 'HIGH').length,
+      medium: result.findings.filter(f => f.severity === 'MEDIUM').length,
+      low: result.findings.filter(f => f.severity === 'LOW').length,
+    },
+    findings: result.findings.map(f => ({
+      id: f.id,
+      severity: f.severity,
+      title: f.title,
+      description: f.description,
+      filePath: f.filePath,
+      lineNumber: f.lineNumber,
+      codeSnippet: f.codeSnippet,
+      fixSnippet: f.fixSnippet,
+    })),
+    exportedAt: new Date().toISOString(),
+    exportedBy: 'SecureSiteScan',
+  };
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `securesitescan-${result.repoName.replace('/', '-')}-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportToPDF(result: ScanResult) {
+  // Generate a printable HTML report and trigger print dialog
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
+
+  const severityColors: Record<Severity, string> = {
+    CRITICAL: '#ef4444',
+    HIGH: '#f97316',
+    MEDIUM: '#eab308',
+    LOW: '#3b82f6',
+  };
+
+  const findingsHTML = result.findings.map(f => `
+    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; page-break-inside: avoid;">
+      <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+        <h3 style="margin: 0; font-size: 16px;">${f.title}</h3>
+        <span style="background: ${severityColors[f.severity]}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${f.severity}</span>
+      </div>
+      <p style="color: #666; font-size: 14px; margin: 8px 0;">${f.filePath}${f.lineNumber ? `:${f.lineNumber}` : ''}</p>
+      <p style="font-size: 14px; margin: 8px 0;">${f.description}</p>
+      <div style="background: #fee2e2; border-radius: 4px; padding: 12px; margin: 8px 0;">
+        <p style="font-size: 12px; color: #dc2626; margin: 0 0 4px 0;">Vulnerable Code:</p>
+        <pre style="margin: 0; font-size: 12px; white-space: pre-wrap;">${f.codeSnippet}</pre>
+      </div>
+      <div style="background: #dcfce7; border-radius: 4px; padding: 12px; margin: 8px 0;">
+        <p style="font-size: 12px; color: #16a34a; margin: 0 0 4px 0;">Recommended Fix:</p>
+        <pre style="margin: 0; font-size: 12px; white-space: pre-wrap;">${f.fixSnippet}</pre>
+      </div>
+    </div>
+  `).join('');
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Security Report - ${result.repoName}</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 40px; color: #333; }
+        @media print { body { margin: 20px; } }
+      </style>
+    </head>
+    <body>
+      <div style="text-align: center; margin-bottom: 32px;">
+        <h1 style="margin: 0; color: #16a34a;">SecureSiteScan</h1>
+        <p style="color: #666;">Security Scan Report</p>
+      </div>
+
+      <div style="background: #f8f9fa; border-radius: 8px; padding: 24px; margin-bottom: 32px;">
+        <h2 style="margin: 0 0 16px 0;">Repository: ${result.repoName}</h2>
+        <p style="margin: 4px 0; color: #666;">URL: ${result.repoUrl}</p>
+        <p style="margin: 4px 0; color: #666;">Scanned: ${new Date(result.scannedAt).toLocaleString()}</p>
+        <p style="margin: 4px 0; color: #666;">Files Scanned: ${result.filesScanned}</p>
+        <div style="margin-top: 16px; display: flex; gap: 24px;">
+          <div>
+            <span style="font-size: 48px; font-weight: bold; color: ${result.securityScore >= 80 ? '#16a34a' : result.securityScore >= 50 ? '#eab308' : '#ef4444'};">${result.securityScore}</span>
+            <span style="color: #666;">/100</span>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <span style="color: #ef4444;">Critical: ${result.findings.filter(f => f.severity === 'CRITICAL').length}</span>
+            <span style="color: #f97316;">High: ${result.findings.filter(f => f.severity === 'HIGH').length}</span>
+            <span style="color: #eab308;">Medium: ${result.findings.filter(f => f.severity === 'MEDIUM').length}</span>
+            <span style="color: #3b82f6;">Low: ${result.findings.filter(f => f.severity === 'LOW').length}</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Findings (${result.findings.length})</h2>
+      ${findingsHTML || '<p>No security issues found.</p>'}
+
+      <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 12px;">
+        <p>Generated by SecureSiteScan on ${new Date().toLocaleString()}</p>
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
 function getSeverityColor(severity: Severity): string {
   switch (severity) {
     case 'CRITICAL':
@@ -350,9 +471,56 @@ export default function ResultsPage() {
                   </p>
                 )}
               </div>
-              <Button asChild size="lg" className="shrink-0 bg-green-600 hover:bg-green-700">
-                <Link href="/#scanner">Scan Another Repo</Link>
-              </Button>
+              <div className="flex flex-wrap gap-3">
+                <Button asChild size="lg" className="shrink-0 bg-green-600 hover:bg-green-700">
+                  <Link href="/#scanner">Scan Another Repo</Link>
+                </Button>
+
+                {/* Export buttons - only for paid tiers */}
+                {(subscription === 'starter' || subscription === 'pro') && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => exportToJSON(result)}
+                      className="gap-2"
+                    >
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Export JSON
+                    </Button>
+                    {subscription === 'pro' && (
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={() => exportToPDF(result)}
+                        className="gap-2"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Export PDF
+                      </Button>
+                    )}
+                  </>
+                )}
+
+                {/* Show upgrade prompt for free users */}
+                {(subscription === 'free' || subscription === 'anonymous') && result.findings.length > 0 && (
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => router.push('/pricing')}
+                    className="gap-2 border-dashed"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Upgrade to Export
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </section>

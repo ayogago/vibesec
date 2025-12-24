@@ -33,14 +33,18 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+      // Note: 'unsafe-inline' is required for Next.js styled-jsx and inline styles
+      // 'unsafe-eval' has been removed for better security
+      // For even stricter CSP, consider implementing nonce-based script loading
+      "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https: blob:",
       "font-src 'self' data:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
-      "form-action 'self'"
+      "form-action 'self'",
+      "upgrade-insecure-requests"
     ].join('; ')
   }
 ];

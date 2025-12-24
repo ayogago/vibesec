@@ -273,7 +273,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-8 max-w-6xl">
         {/* Welcome Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between">

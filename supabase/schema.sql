@@ -99,14 +99,7 @@ CREATE POLICY "Users can view own scan counts" ON daily_scan_counts
 CREATE POLICY "Users can manage own scan counts" ON daily_scan_counts
     FOR ALL USING (auth.uid()::text = user_id::text);
 
--- Insert default admin user (password will need to be hashed in production)
--- The password 'admin123' should be hashed with bcrypt before inserting
-INSERT INTO users (id, email, name, password_hash, subscription, created_at)
-VALUES (
-    'a0000000-0000-0000-0000-000000000001',
-    'info@securesitescan.com',
-    'SecureSiteScan Admin',
-    '$2b$10$rOzJqQZQhPjLQmJX0D4Vf.W8Y9cP5E1tKqRzXzGz5A5nMvHq6qLHe', -- 'admin123' hashed
-    'pro',
-    NOW()
-) ON CONFLICT (email) DO NOTHING;
+-- IMPORTANT: Admin users should be created via the application with ADMIN_PASSWORD environment variable
+-- Do NOT insert hardcoded credentials in schema files
+-- To create an admin user, set the ADMIN_PASSWORD environment variable and the application
+-- will create the admin user on first startup with a properly hashed password

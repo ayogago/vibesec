@@ -24,13 +24,13 @@ export const SUBSCRIPTION_LIMITS: Record<SubscriptionTier, SubscriptionLimits> =
   starter: {
     visibleFindings: Infinity,
     dailyScans: 10,
-    price: 19.99,
+    price: 2.99,
     name: 'Starter',
   },
   pro: {
     visibleFindings: Infinity,
     dailyScans: 50,
-    price: 99,
+    price: 9.99,
     name: 'Pro',
   },
 };
