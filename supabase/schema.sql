@@ -4,8 +4,12 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Create subscription tier enum
-CREATE TYPE subscription_tier AS ENUM ('anonymous', 'free', 'starter', 'pro');
+-- Create subscription tier enum (skip if exists)
+DO $$ BEGIN
+    CREATE TYPE subscription_tier AS ENUM ('anonymous', 'free', 'starter', 'pro');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
@@ -64,42 +68,45 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Trigger for users table
+-- Trigger for users table (drop first if exists to avoid duplicates)
+DROP TRIGGER IF EXISTS update_users_updated_at ON users;
 CREATE TRIGGER update_users_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
--- Row Level Security (RLS) policies
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE scan_history ENABLE ROW LEVEL SECURITY;
-ALTER TABLE daily_scan_counts ENABLE ROW LEVEL SECURITY;
+-- =====================================================
+-- Row Level Security (RLS) Configuration
+-- =====================================================
+-- IMPORTANT: Since we use NextAuth (not Supabase Auth), we need to allow
+-- the anon key to perform operations. The security is handled at the
+-- application layer through NextAuth authentication.
+--
+-- We DISABLE RLS since our app handles auth via NextAuth, not Supabase Auth.
+-- The anon key is only used from server-side API routes which are protected
+-- by NextAuth session checks.
+-- =====================================================
 
--- Users can read/update their own data
-CREATE POLICY "Users can view own profile" ON users
-    FOR SELECT USING (auth.uid()::text = id::text);
+-- Disable RLS on all tables (app handles authentication via NextAuth)
+ALTER TABLE users DISABLE ROW LEVEL SECURITY;
+ALTER TABLE scan_history DISABLE ROW LEVEL SECURITY;
+ALTER TABLE daily_scan_counts DISABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can update own profile" ON users
-    FOR UPDATE USING (auth.uid()::text = id::text);
+-- Grant permissions to anon role for all operations
+GRANT ALL ON users TO anon;
+GRANT ALL ON scan_history TO anon;
+GRANT ALL ON daily_scan_counts TO anon;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon;
 
--- Scan history policies
-CREATE POLICY "Users can view own scans" ON scan_history
-    FOR SELECT USING (auth.uid()::text = user_id::text);
-
-CREATE POLICY "Users can insert own scans" ON scan_history
-    FOR INSERT WITH CHECK (auth.uid()::text = user_id::text);
-
-CREATE POLICY "Users can delete own scans" ON scan_history
-    FOR DELETE USING (auth.uid()::text = user_id::text);
-
--- Daily scan count policies
-CREATE POLICY "Users can view own scan counts" ON daily_scan_counts
-    FOR SELECT USING (auth.uid()::text = user_id::text);
-
-CREATE POLICY "Users can manage own scan counts" ON daily_scan_counts
-    FOR ALL USING (auth.uid()::text = user_id::text);
-
+-- =====================================================
+-- Admin User Setup Instructions
+-- =====================================================
 -- IMPORTANT: Admin users should be created via the application with ADMIN_PASSWORD environment variable
 -- Do NOT insert hardcoded credentials in schema files
--- To create an admin user, set the ADMIN_PASSWORD environment variable and the application
--- will create the admin user on first startup with a properly hashed password
+--
+-- To create an admin user:
+-- 1. Set the ADMIN_PASSWORD environment variable in Vercel/your hosting
+-- 2. Deploy the application
+-- 3. Call GET or POST /api/admin/init to create the admin user
+-- 4. Login with info@securesitescan.com and your ADMIN_PASSWORD
+-- =====================================================
