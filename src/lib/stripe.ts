@@ -17,7 +17,7 @@ export const STRIPE_PRODUCTS = {
   starter: {
     name: 'Starter Plan',
     description: 'For indie hackers and solo developers',
-    price: 1999, // $19.99 in cents
+    price: 299, // $2.99 in cents
     features: [
       '10 scans per day',
       'View all findings',
@@ -28,7 +28,7 @@ export const STRIPE_PRODUCTS = {
   pro: {
     name: 'Pro Plan',
     description: 'For teams and agencies shipping daily',
-    price: 9900, // $99 in cents
+    price: 999, // $9.99 in cents
     features: [
       '50 scans per day',
       'Everything in Starter',

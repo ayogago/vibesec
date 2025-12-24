@@ -30,7 +30,7 @@ const plans = [
   {
     name: 'Starter',
     description: 'For indie hackers and solo developers',
-    price: '$19.99',
+    price: '$2.99',
     period: '/month',
     tier: 'starter',
     features: [
@@ -48,7 +48,7 @@ const plans = [
   {
     name: 'Pro',
     description: 'For teams and agencies shipping daily',
-    price: '$99',
+    price: '$9.99',
     period: '/month',
     tier: 'pro',
     features: [
