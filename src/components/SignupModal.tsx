@@ -114,7 +114,7 @@ export function SignupModal({ isOpen, onClose, onSuccess, mode = 'signup' }: Sig
                 onClick={() => window.location.href = '/pricing'}
               >
                 <span className="font-semibold">Starter</span>
-                <span className="text-xs text-muted-foreground">$19.99/mo</span>
+                <span className="text-xs text-muted-foreground">$2.99/mo</span>
               </Button>
               <Button
                 type="button"
@@ -123,7 +123,7 @@ export function SignupModal({ isOpen, onClose, onSuccess, mode = 'signup' }: Sig
                 onClick={() => window.location.href = '/pricing'}
               >
                 <span className="font-semibold text-green-500">Pro</span>
-                <span className="text-xs text-muted-foreground">$99/mo</span>
+                <span className="text-xs text-muted-foreground">$9.99/mo</span>
               </Button>
             </div>
           </form>

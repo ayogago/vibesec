@@ -63,8 +63,8 @@ export async function GET() {
     const criticalFindingsTotal = findingsData?.reduce((sum: number, s: { critical_count: number }) => sum + (s.critical_count || 0), 0) || 0;
     const highFindingsTotal = findingsData?.reduce((sum: number, s: { high_count: number }) => sum + (s.high_count || 0), 0) || 0;
 
-    // Calculate revenue (starter = $19.99, pro = $99)
-    const monthlyRevenue = (subscriptionCounts.starter * 19.99) + (subscriptionCounts.pro * 99);
+    // Calculate revenue (starter = $2.99, pro = $9.99)
+    const monthlyRevenue = (subscriptionCounts.starter * 2.99) + (subscriptionCounts.pro * 9.99);
 
     // Get users registered this month
     const startOfMonth = new Date();
