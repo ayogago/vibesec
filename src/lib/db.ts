@@ -189,6 +189,40 @@ export async function activateSubscription(
   });
 }
 
+// Update user subscription by email (used by Stripe webhook)
+export async function updateUserSubscription(
+  email: string,
+  tier: SubscriptionTier
+): Promise<{ user?: User; error?: string }> {
+  try {
+    if (!isDatabaseConfigured()) {
+      return { error: 'Database not configured' };
+    }
+
+    const client = requireDb();
+    const { data, error } = await client
+      .from('users')
+      .update({
+        subscription: tier,
+        pending_plan: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('email', email.toLowerCase())
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating subscription:', error);
+      return { error: error.message };
+    }
+
+    return { user: data as User };
+  } catch (error) {
+    console.error('Error updating subscription:', error);
+    return { error: 'Failed to update subscription' };
+  }
+}
+
 export async function getAllUsers(): Promise<User[]> {
   try {
     if (!isDatabaseConfigured()) return [];

@@ -14,10 +14,10 @@ const plans = [
     tier: 'free',
     features: [
       '1 scan per day',
-      'View 1 finding per scan (sample)',
+      'View 2 findings per scan (sample)',
       'See total vulnerability count',
       '40+ security checks',
-      'Basic severity breakdown',
+      'Severity breakdown',
     ],
     limitations: [
       'Limited finding visibility',
@@ -39,7 +39,6 @@ const plans = [
       'Detailed fix suggestions',
       'Full code snippets',
       'Export reports (JSON)',
-      'Email support',
     ],
     limitations: [],
     cta: 'Start Starter Plan',
@@ -55,11 +54,7 @@ const plans = [
     features: [
       '50 scans per day',
       'Everything in Starter, plus:',
-      'Priority scan queue',
-      'API access',
-      'CI/CD integration',
-      'PDF & SARIF export',
-      'Private repo scanning',
+      'PDF export for reports',
       'Priority support',
     ],
     limitations: [],
@@ -71,7 +66,7 @@ const plans = [
 
 const comparisonFeatures = [
   { name: 'Daily scans', free: '1', starter: '10', pro: '50' },
-  { name: 'Visible findings per scan', free: '1 (sample)', starter: 'Unlimited', pro: 'Unlimited' },
+  { name: 'Visible findings per scan', free: '2 (sample)', starter: 'Unlimited', pro: 'Unlimited' },
   { name: 'Total finding count', free: true, starter: true, pro: true },
   { name: 'Security score', free: true, starter: true, pro: true },
   { name: 'Severity breakdown', free: true, starter: true, pro: true },
@@ -79,12 +74,6 @@ const comparisonFeatures = [
   { name: 'Code snippets', free: false, starter: true, pro: true },
   { name: 'JSON export', free: false, starter: true, pro: true },
   { name: 'PDF export', free: false, starter: false, pro: true },
-  { name: 'SARIF export (GitHub)', free: false, starter: false, pro: true },
-  { name: 'Private repositories', free: false, starter: false, pro: true },
-  { name: 'API access', free: false, starter: false, pro: true },
-  { name: 'CI/CD integration', free: false, starter: false, pro: true },
-  { name: 'Priority queue', free: false, starter: false, pro: true },
-  { name: 'Email support', free: false, starter: true, pro: true },
   { name: 'Priority support', free: false, starter: false, pro: true },
 ];
 
