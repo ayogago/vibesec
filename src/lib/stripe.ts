@@ -1,9 +1,27 @@
 import Stripe from 'stripe';
 
-// Initialize Stripe with the secret key
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-12-15.clover',
-  typescript: true,
+// Lazy-initialize Stripe to avoid errors during build when env vars aren't set
+let _stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!_stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY is not configured');
+    }
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-12-15.clover',
+      typescript: true,
+    });
+  }
+  return _stripe;
+}
+
+// Export stripe as a getter to ensure lazy initialization
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    const stripeInstance = getStripe();
+    return (stripeInstance as unknown as Record<string | symbol, unknown>)[prop];
+  },
 });
 
 // Price IDs for each subscription tier (set these in your Stripe dashboard)
