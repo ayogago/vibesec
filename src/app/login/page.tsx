@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
-import { validateCredentials, setCurrentUser, initializeAdminUser } from "@/lib/users"
 import { SubscriptionTier } from "@/lib/subscription"
 
 function LoginContent() {
@@ -25,11 +24,6 @@ function LoginContent() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-
-  // Initialize admin user on page load
-  useEffect(() => {
-    initializeAdminUser()
-  }, [])
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -53,52 +47,28 @@ function LoginContent() {
     }
 
     try {
-      // First try to validate against the database
-      let user = null
-      let userId = ""
-      let userName = ""
+      // Validate against the database API
+      const dbResponse = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
 
-      try {
-        const dbResponse = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        })
+      const data = await dbResponse.json()
 
-        if (dbResponse.ok) {
-          const data = await dbResponse.json()
-          user = data.user
-          userId = user.id
-          userName = user.name
-        }
-      } catch {
-        // Database not available, fall back to localStorage
-      }
-
-      // If database validation failed, try localStorage
-      if (!user) {
-        const localUser = validateCredentials(email, password)
-        if (localUser) {
-          user = localUser
-          userId = localUser.id
-          userName = localUser.name
-        }
-      }
-
-      if (!user) {
-        setError("Invalid email or password")
+      if (!dbResponse.ok) {
+        setError(data.error || "Invalid email or password")
         setLoading(false)
         return
       }
 
-      // Set current user in localStorage
-      setCurrentUser(userId)
+      const user = data.user
 
-      // Sign in with credentials
+      // Sign in with NextAuth credentials
       const signInResult = await signIn("credentials", {
         email: user.email,
-        userId: userId,
-        userName: userName,
+        userId: user.id,
+        userName: user.name,
         redirect: false,
       })
 
@@ -110,9 +80,10 @@ function LoginContent() {
       }
 
       // Check if user has a pending plan or selected a new plan
-      const pendingPlan = user.pendingPlan || user.pending_plan
+      const pendingPlan = user.pending_plan
       const subscription = user.subscription
       const redirectPlan = selectedPlan || pendingPlan
+
       if (redirectPlan && redirectPlan !== "free" && redirectPlan !== "anonymous" && subscription === "free") {
         router.push(`/checkout?plan=${redirectPlan}`)
       } else {
@@ -145,7 +116,7 @@ function LoginContent() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
+      <main className="flex-1 flex items-center justify-center px-4 py-12 pt-24">
         <Card className="w-full max-w-md bg-card/50 backdrop-blur border-border/50">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
@@ -187,6 +158,7 @@ function LoginContent() {
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10"
                     required
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -213,6 +185,7 @@ function LoginContent() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10"
                     required
+                    autoComplete="current-password"
                   />
                 </div>
               </div>

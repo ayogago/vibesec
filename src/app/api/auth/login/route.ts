@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as db from '@/lib/db';
 
+// Track if admin initialization has been attempted this server lifecycle
+let adminInitAttempted = false;
+
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
@@ -18,6 +21,17 @@ export async function POST(request: NextRequest) {
         { error: 'Database not configured. Please set up Supabase.' },
         { status: 500 }
       );
+    }
+
+    // Initialize admin user on first login attempt if not done yet
+    if (!adminInitAttempted) {
+      adminInitAttempted = true;
+      try {
+        await db.initializeAdminUser();
+      } catch (e) {
+        console.error('Admin initialization error:', e);
+        // Continue with login attempt even if admin init fails
+      }
     }
 
     const user = await db.validateCredentials(email, password);
