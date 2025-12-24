@@ -1,8 +1,20 @@
 import { NextResponse } from 'next/server';
 import { isDatabaseConfigured } from '@/lib/db';
+import { auth } from '@/lib/auth';
+
+// Admin emails that have access to database status
+const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
 
 export async function GET() {
   try {
+    // Require admin authentication for database status
+    const session = await auth();
+    if (!session?.user?.email || !ADMIN_EMAILS.includes(session.user.email)) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Admin access required' },
+        { status: 401 }
+      );
+    }
     // Check if environment variables are set
     if (!isDatabaseConfigured()) {
       return NextResponse.json({

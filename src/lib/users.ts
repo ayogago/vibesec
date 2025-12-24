@@ -1,5 +1,8 @@
 // User storage and management
-// In production, this would be a database. For now, using localStorage.
+// PRODUCTION NOTE: This file contains localStorage fallback functions that are
+// DEPRECATED and should NOT be used in production. All user management should
+// go through the database (src/lib/db.ts). These functions exist only for
+// backward compatibility during development.
 
 import { SubscriptionTier } from "./subscription"
 
@@ -19,7 +22,7 @@ export interface StoredUser {
   id: string
   email: string
   name: string
-  password: string // In production, this would be hashed
+  password: string // DEPRECATED: Password field - only used for legacy localStorage
   image?: string
   subscription: SubscriptionTier
   pendingPlan?: SubscriptionTier // Plan selected but not paid for
@@ -28,6 +31,9 @@ export interface StoredUser {
   githubId?: number
   githubAccessToken?: string
 }
+
+// Check if we're in production mode
+const isProduction = process.env.NODE_ENV === 'production'
 
 export interface ScanHistoryItem {
   id: string
@@ -53,7 +59,12 @@ function generateId(): string {
 }
 
 // Get all users from storage
+// DEPRECATED: Use database functions from src/lib/db.ts instead
 export function getAllUsers(): StoredUser[] {
+  if (isProduction) {
+    console.warn('getAllUsers(): localStorage user storage is disabled in production. Use database.')
+    return []
+  }
   if (typeof window === "undefined") return []
   const stored = localStorage.getItem(USERS_KEY)
   if (stored) {
@@ -85,12 +96,19 @@ export function findUserById(id: string): StoredUser | null {
 }
 
 // Create a new user
+// DEPRECATED: Use database registration from src/lib/db.ts instead
 export function createUser(
   email: string,
   password: string,
   name: string,
   pendingPlan?: SubscriptionTier
 ): StoredUser | { error: string } {
+  // Block localStorage user creation in production
+  if (isProduction) {
+    console.error('createUser(): localStorage user creation is disabled in production. Use database.')
+    return { error: "User registration requires database configuration" }
+  }
+
   // Check if user already exists
   if (findUserByEmail(email)) {
     return { error: "An account with this email already exists" }
@@ -100,7 +118,7 @@ export function createUser(
     id: generateId(),
     email: email.toLowerCase(),
     name,
-    password, // In production, hash this!
+    password, // WARNING: Plaintext password - only for development
     subscription: "free", // Default to free
     pendingPlan: pendingPlan && pendingPlan !== "free" ? pendingPlan : undefined,
     createdAt: new Date().toISOString(),
@@ -114,10 +132,17 @@ export function createUser(
 }
 
 // Validate user credentials
+// DEPRECATED: Use database authentication from src/lib/db.ts instead
 export function validateCredentials(
   email: string,
   password: string
 ): StoredUser | null {
+  // Block plaintext credential validation in production
+  if (isProduction) {
+    console.error('validateCredentials(): localStorage authentication is disabled in production. Use database.')
+    return null
+  }
+
   const user = findUserByEmail(email)
   if (user && user.password === password) {
     // Update last login

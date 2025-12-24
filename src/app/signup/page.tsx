@@ -51,8 +51,8 @@ function SignupContent() {
       return
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters")
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters")
       setLoading(false)
       return
     }
@@ -212,12 +212,12 @@ function SignupContent() {
                     <Input
                       id="password"
                       type="password"
-                      placeholder="Min. 6 characters"
+                      placeholder="Min. 8 characters"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-10"
                       required
-                      minLength={6}
+                      minLength={8}
                     />
                   </div>
                 </div>
