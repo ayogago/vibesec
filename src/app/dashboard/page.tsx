@@ -785,7 +785,7 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="mb-4">
-                        <span className="text-3xl font-bold">$19.99</span>
+                        <span className="text-3xl font-bold">$2.99</span>
                         <span className="text-muted-foreground">/month</span>
                       </div>
                       <ul className="space-y-2 text-sm text-muted-foreground mb-4">
@@ -819,7 +819,7 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="mb-4">
-                      <span className="text-3xl font-bold">$99</span>
+                      <span className="text-3xl font-bold">$9.99</span>
                       <span className="text-muted-foreground">/month</span>
                     </div>
                     <ul className="space-y-2 text-sm text-muted-foreground mb-4">

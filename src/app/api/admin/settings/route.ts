@@ -19,8 +19,8 @@ const DEFAULT_SETTINGS = {
     pro: 50,
   },
   pricing: {
-    starter: 19.99,
-    pro: 99.00,
+    starter: 2.99,
+    pro: 9.99,
   },
   features: {
     githubIntegration: false,

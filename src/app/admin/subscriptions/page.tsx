@@ -46,14 +46,14 @@ const plans: Record<string, PlanInfo> = {
   },
   starter: {
     name: "Starter",
-    price: 19.99,
+    price: 2.99,
     features: ["10 scans per day", "All findings", "Email support", "Priority queue"],
     color: "bg-blue-500",
     icon: <Zap className="h-5 w-5" />,
   },
   pro: {
     name: "Pro",
-    price: 99.0,
+    price: 9.99,
     features: ["50 scans per day", "All findings", "Priority support", "API access", "Custom reports"],
     color: "bg-gradient-to-r from-purple-500 to-pink-500",
     icon: <Crown className="h-5 w-5" />,
