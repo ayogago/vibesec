@@ -5,10 +5,17 @@ import { cookies } from "next/headers"
 // Initiates GitHub OAuth flow for linking to existing account
 export async function GET(request: Request) {
   try {
+    // Check if GitHub OAuth is configured
+    if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+      console.error("GitHub OAuth not configured - missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET")
+      return NextResponse.redirect(new URL("/dashboard?error=github_not_configured", request.url))
+    }
+
     const session = await auth()
 
     if (!session?.user?.id) {
-      return NextResponse.redirect(new URL("/login", request.url))
+      console.error("No session found for GitHub link")
+      return NextResponse.redirect(new URL("/login?callbackUrl=/dashboard", request.url))
     }
 
     // Store the user ID in a cookie for the callback
@@ -23,13 +30,15 @@ export async function GET(request: Request) {
 
     // Build GitHub OAuth URL
     const githubAuthUrl = new URL("https://github.com/login/oauth/authorize")
-    githubAuthUrl.searchParams.set("client_id", process.env.GITHUB_CLIENT_ID!)
+    githubAuthUrl.searchParams.set("client_id", process.env.GITHUB_CLIENT_ID)
     githubAuthUrl.searchParams.set("scope", "read:user user:email repo")
     githubAuthUrl.searchParams.set("state", crypto.randomUUID())
 
     // Use the callback URL configured in GitHub OAuth app
     const callbackUrl = new URL("/api/auth/callback/github", request.url).toString()
     githubAuthUrl.searchParams.set("redirect_uri", callbackUrl)
+
+    console.log("Redirecting to GitHub OAuth:", githubAuthUrl.toString())
 
     return NextResponse.redirect(githubAuthUrl.toString())
   } catch (error) {
