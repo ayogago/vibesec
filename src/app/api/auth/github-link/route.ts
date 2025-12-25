@@ -27,8 +27,8 @@ export async function GET(request: Request) {
     githubAuthUrl.searchParams.set("scope", "read:user user:email repo")
     githubAuthUrl.searchParams.set("state", crypto.randomUUID())
 
-    // Use our custom callback for linking
-    const callbackUrl = new URL("/api/auth/github-callback", request.url).toString()
+    // Use the callback URL configured in GitHub OAuth app
+    const callbackUrl = new URL("/api/auth/callback/github", request.url).toString()
     githubAuthUrl.searchParams.set("redirect_uri", callbackUrl)
 
     return NextResponse.redirect(githubAuthUrl.toString())

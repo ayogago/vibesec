@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
 import { updateUser, findUserById } from "@/lib/db"
 import { cookies } from "next/headers"
 
@@ -8,7 +7,6 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url)
     const code = url.searchParams.get("code")
-    const state = url.searchParams.get("state")
 
     // Get the stored user ID from cookie
     const cookieStore = await cookies()
@@ -19,7 +17,7 @@ export async function GET(request: Request) {
     }
 
     if (!linkUserId) {
-      // No linking intent - redirect to normal OAuth flow
+      // No linking intent - redirect to dashboard with error
       return NextResponse.redirect(new URL("/dashboard?error=no_link_session", request.url))
     }
 
