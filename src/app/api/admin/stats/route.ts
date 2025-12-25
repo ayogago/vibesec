@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { isDatabaseConfigured, db } from '@/lib/db';
 
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 export async function GET() {
   try {

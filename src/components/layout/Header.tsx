@@ -14,7 +14,7 @@ const navigation = [
   { name: 'About', href: '/about' },
 ];
 
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 export function Header() {
   const { data: session, status } = useSession();

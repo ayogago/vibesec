@@ -20,7 +20,7 @@ import {
 import Link from "next/link"
 
 // Admin emails that have access to the admin dashboard
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"]
+const ADMIN_EMAILS = ["info@securesitescan.com"]
 
 interface AdminLayoutProps {
   children: React.ReactNode

@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth';
 import { isDatabaseConfigured, db, createUser } from '@/lib/db';
 import type { SubscriptionTier, User } from '@/lib/database.types';
 
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 export async function GET(request: NextRequest) {
   try {

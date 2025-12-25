@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { isDatabaseConfigured, db } from '@/lib/db';
 
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 // Default settings
 const DEFAULT_SETTINGS = {
   siteName: 'SecureSiteScan.com',
   siteDescription: 'Security Scanner for AI-Generated Apps',
   contactEmail: 'info@securesitescan.com',
-  supportEmail: 'support@securesitescan.com',
+  supportEmail: 'info@securesitescan.com',
   maintenanceMode: false,
   registrationEnabled: true,
   scanLimits: {
