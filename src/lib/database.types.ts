@@ -26,6 +26,7 @@ export interface Database {
           reset_token_expires: string | null;
           profile_image: string | null;
           oauth_provider: string | null;
+          github_access_token: string | null;
           created_at: string;
           last_login_at: string | null;
           updated_at: string;
@@ -41,6 +42,7 @@ export interface Database {
           reset_token_expires?: string | null;
           profile_image?: string | null;
           oauth_provider?: string | null;
+          github_access_token?: string | null;
           created_at?: string;
           last_login_at?: string | null;
           updated_at?: string;
@@ -56,6 +58,7 @@ export interface Database {
           reset_token_expires?: string | null;
           profile_image?: string | null;
           oauth_provider?: string | null;
+          github_access_token?: string | null;
           created_at?: string;
           last_login_at?: string | null;
           updated_at?: string;

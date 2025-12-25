@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import Link from "next/link"
@@ -69,6 +69,9 @@ export default function DashboardPage() {
   const [scanHistory, setScanHistory] = useState<ScanHistoryItem[]>([])
   const [activeTab, setActiveTab] = useState<"repos" | "history" | "subscription" | "settings">("repos")
   const [userSubscription, setUserSubscription] = useState<SubscriptionTier>("free")
+  const [githubConnected, setGithubConnected] = useState(false)
+  const [repoUrl, setRepoUrl] = useState("")
+  const [urlScanning, setUrlScanning] = useState(false)
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState("")
@@ -114,22 +117,83 @@ export default function DashboardPage() {
       setError(null)
       const response = await fetch("/api/github/repos")
 
-      if (!response.ok) {
-        // If GitHub repos fail, just show empty state
+      const data = await response.json()
+
+      if (!response.ok || !data.githubConnected) {
+        // GitHub not connected
+        setGithubConnected(false)
         setRepos([])
         setFilteredRepos([])
         return
       }
 
-      const data = await response.json()
+      setGithubConnected(true)
       setRepos(data.repos || [])
       setFilteredRepos(data.repos || [])
     } catch (err) {
       console.error("Error fetching repos:", err)
+      setGithubConnected(false)
       setRepos([])
       setFilteredRepos([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleUrlScan = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!repoUrl.trim()) return
+
+    // Validate GitHub URL
+    const pattern = /^https?:\/\/(www\.)?github\.com\/[^\/]+\/[^\/]+/
+    if (!pattern.test(repoUrl)) {
+      setError("Please enter a valid GitHub repository URL")
+      return
+    }
+
+    setUrlScanning(true)
+    setError(null)
+
+    try {
+      const response = await fetch("/api/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ repoUrl }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || "Scan failed")
+      }
+
+      const result = await response.json()
+
+      // Save to session storage for results page
+      sessionStorage.setItem("scanResult", JSON.stringify(result))
+
+      // Extract repo name from URL
+      const urlParts = repoUrl.replace(/^https?:\/\/(www\.)?github\.com\//, "").split("/")
+      const repoName = `${urlParts[0]}/${urlParts[1]}`.replace(/\.git$/, "")
+
+      // Save to scan history
+      saveScanToHistory({
+        repoName,
+        repoUrl,
+        scannedAt: new Date().toISOString(),
+        securityScore: result.securityScore,
+        totalFindings: result.findings.length,
+        criticalCount: result.findings.filter((f: { severity: string }) => f.severity === "CRITICAL").length,
+        highCount: result.findings.filter((f: { severity: string }) => f.severity === "HIGH").length,
+        mediumCount: result.findings.filter((f: { severity: string }) => f.severity === "MEDIUM").length,
+        lowCount: result.findings.filter((f: { severity: string }) => f.severity === "LOW").length,
+      })
+
+      router.push("/results")
+    } catch (err) {
+      console.error("Scan error:", err)
+      setError(err instanceof Error ? err.message : "Failed to scan repository")
+    } finally {
+      setUrlScanning(false)
     }
   }
 
@@ -485,35 +549,91 @@ export default function DashboardPage() {
         {/* Repositories Tab */}
         {activeTab === "repos" && (
           <>
-            {/* Search and Refresh */}
-            <div className="flex gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search repositories..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-background/50"
-                />
-              </div>
-              <Button
-                variant="outline"
-                onClick={fetchRepos}
-                disabled={loading}
-                className="gap-2"
-              >
-                <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-                Refresh
-              </Button>
-            </div>
-
-            {/* Note for users */}
-            {repos.length === 0 && !loading && (
-              <div className="mb-6 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
-                <p className="text-sm">
-                  <strong>Tip:</strong> Scan any public repository by going to the{" "}
-                  <Link href="/" className="underline">homepage</Link> and entering a GitHub URL.
+            {/* URL Scanner Card */}
+            <Card className="bg-card/50 backdrop-blur border-border/50 mb-6">
+              <CardContent className="p-4">
+                <form onSubmit={handleUrlScan} className="flex gap-3">
+                  <div className="relative flex-1">
+                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="https://github.com/username/repo"
+                      value={repoUrl}
+                      onChange={(e) => setRepoUrl(e.target.value)}
+                      className="pl-10 bg-background/50"
+                      disabled={urlScanning}
+                    />
+                  </div>
+                  <Button type="submit" disabled={urlScanning || !repoUrl.trim()} className="gap-2">
+                    {urlScanning ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Scanning...
+                      </>
+                    ) : (
+                      <>
+                        <Shield className="h-4 w-4" />
+                        Scan URL
+                      </>
+                    )}
+                  </Button>
+                </form>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Scan any public repository by URL. {!githubConnected && "Connect GitHub below to scan private repos."}
                 </p>
+              </CardContent>
+            </Card>
+
+            {/* GitHub Connection Card */}
+            {!loading && !githubConnected && (
+              <Card className="bg-gradient-to-br from-zinc-900 to-zinc-800 border-zinc-700 mb-6">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-full bg-white/10">
+                      <svg className="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white">Connect GitHub to Scan Private Repos</h3>
+                      <p className="text-sm text-zinc-400">
+                        Sign in with GitHub to access and scan your private repositories securely.
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+                      className="bg-white text-black hover:bg-zinc-200"
+                    >
+                      <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                      Connect GitHub
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* GitHub Connected - Search and Refresh */}
+            {githubConnected && (
+              <div className="flex gap-4 mb-6">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search your repositories..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 bg-background/50"
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={fetchRepos}
+                  disabled={loading}
+                  className="gap-2"
+                >
+                  <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                  Refresh
+                </Button>
               </div>
             )}
 
@@ -523,15 +643,19 @@ export default function DashboardPage() {
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 <span className="ml-3 text-muted-foreground">Loading repositories...</span>
               </div>
+            ) : !githubConnected ? (
+              <div className="text-center py-8">
+                <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">Connect GitHub above to see your repositories</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Or use the URL scanner to scan any public repository
+                </p>
+              </div>
             ) : filteredRepos.length === 0 ? (
               <div className="text-center py-12">
                 <GitBranch className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <p className="text-muted-foreground">
                   {searchQuery ? "No repositories match your search" : "No repositories found"}
-                </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  You can still scan any public repository from the{" "}
-                  <Link href="/" className="text-primary underline">homepage</Link>
                 </p>
               </div>
             ) : (

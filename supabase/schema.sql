@@ -38,6 +38,7 @@ END $$;
 DO $$ BEGIN
     ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image VARCHAR(500);
     ALTER TABLE users ADD COLUMN IF NOT EXISTS oauth_provider VARCHAR(50);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS github_access_token TEXT;
 EXCEPTION
     WHEN duplicate_column THEN null;
 END $$;
