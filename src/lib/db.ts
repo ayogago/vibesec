@@ -101,7 +101,8 @@ export async function createOAuthUser(
   email: string,
   name: string,
   image?: string,
-  provider: string = 'google'
+  provider: string = 'google',
+  githubAccessToken?: string
 ): Promise<{ user?: User; error?: string }> {
   try {
     if (!isDatabaseConfigured()) {
@@ -120,14 +121,21 @@ export async function createOAuthUser(
     if (existingData) {
       const existing = existingData as User;
       // User exists - update their info and return
+      const updateData: Record<string, string | null> = {
+        name: name || existing.name,
+        profile_image: image || existing.profile_image,
+        oauth_provider: provider,
+        last_login_at: new Date().toISOString(),
+      };
+
+      // Store GitHub token if provided
+      if (provider === 'github' && githubAccessToken) {
+        updateData.github_access_token = githubAccessToken;
+      }
+
       const { data: updated, error: updateError } = await client
         .from('users')
-        .update({
-          name: name || existing.name,
-          profile_image: image || existing.profile_image,
-          oauth_provider: provider,
-          last_login_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq('id', existing.id)
         .select()
         .single();
@@ -148,6 +156,7 @@ export async function createOAuthUser(
         profile_image: image || null,
         oauth_provider: provider,
         subscription: 'free' as SubscriptionTier,
+        github_access_token: provider === 'github' && githubAccessToken ? githubAccessToken : null,
       })
       .select()
       .single();
@@ -200,6 +209,24 @@ export async function findUserById(id: string): Promise<User | null> {
   }
 }
 
+export async function getGitHubToken(userId: string): Promise<string | null> {
+  try {
+    if (!isDatabaseConfigured()) return null;
+
+    const client = requireDb();
+    const { data, error } = await client
+      .from('users')
+      .select('github_access_token')
+      .eq('id', userId)
+      .single();
+
+    if (error || !data) return null;
+    return data.github_access_token;
+  } catch {
+    return null;
+  }
+}
+
 export async function validateCredentials(
   email: string,
   password: string
@@ -226,7 +253,7 @@ export async function validateCredentials(
 
 export async function updateUser(
   userId: string,
-  updates: Partial<Pick<User, 'name' | 'subscription' | 'pending_plan' | 'last_login_at'>>
+  updates: Partial<Pick<User, 'name' | 'subscription' | 'pending_plan' | 'last_login_at' | 'oauth_provider' | 'github_access_token'>>
 ): Promise<User | null> {
   try {
     if (!isDatabaseConfigured()) return null;
