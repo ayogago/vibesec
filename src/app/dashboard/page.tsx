@@ -98,12 +98,28 @@ function DashboardContent() {
     }
   }, [status])
 
-  // Check if GitHub was just linked
+  // Check if GitHub was just linked or if there's an error
   useEffect(() => {
     if (searchParams.get("github") === "linked") {
       // Refresh repos after GitHub linking
       fetchRepos()
       // Clear the URL parameter
+      router.replace("/dashboard")
+    }
+
+    // Handle GitHub linking errors
+    const errorParam = searchParams.get("error")
+    if (errorParam) {
+      const errorMessages: Record<string, string> = {
+        github_not_configured: "GitHub integration is not configured. Please contact support.",
+        github_link_failed: "Failed to connect to GitHub. Please try again.",
+        github_auth_failed: "GitHub authentication failed. Please try again.",
+        github_token_failed: "Failed to get GitHub access token. Please try again.",
+        no_link_session: "Session expired. Please try connecting GitHub again.",
+        user_not_found: "User session not found. Please log in again.",
+        github_callback_failed: "GitHub callback failed. Please try again.",
+      }
+      setError(errorMessages[errorParam] || "An error occurred. Please try again.")
       router.replace("/dashboard")
     }
   }, [searchParams])
