@@ -33,6 +33,7 @@ export default function ShefPage() {
         router.push("/admin")
       } else {
         // Not an admin, sign them out and show error
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setError("Access denied. Admin credentials required.")
       }
     }

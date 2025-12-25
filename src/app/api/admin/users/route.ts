@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { isDatabaseConfigured, db, createUser } from '@/lib/db';
-import type { SubscriptionTier } from '@/lib/database.types';
+import type { SubscriptionTier, User } from '@/lib/database.types';
 
 const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get users with scan counts
-    const { data: users, count, error } = await query
+    const { data, count, error } = await query
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -45,6 +45,8 @@ export async function GET(request: NextRequest) {
       console.error('Error fetching users:', error);
       return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
     }
+
+    const users = data as User[] | null;
 
     // Get scan counts for each user
     const usersWithStats = await Promise.all(

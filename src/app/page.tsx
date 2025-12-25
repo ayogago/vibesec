@@ -64,7 +64,7 @@ Found 3 issues:
 View full report →`;
 
 export default function HomePage() {
-  const { data: session } = useSession();
+  useSession(); // Initialize session for auth state
   const [repoUrl, setRepoUrl] = useState('');
   const [githubToken, setGithubToken] = useState('');
   const [showTokenInput, setShowTokenInput] = useState(false);
@@ -442,8 +442,8 @@ export default function HomePage() {
                       </p>
                     </div>
                     <div className="rounded-lg bg-zinc-900 p-3 font-mono text-xs">
-                      <div className="text-zinc-500 mb-1">// src/lib/supabase.ts:12</div>
-                      <div className="text-red-400">- const key = "eyJhbGciOiJIUzI1NiIs..."</div>
+                      <div className="text-zinc-500 mb-1">{/* src/lib/supabase.ts:12 */}</div>
+                      <div className="text-red-400">- const key = &quot;eyJhbGciOiJIUzI1NiIs...&quot;</div>
                       <div className="text-emerald-400">+ const key = process.env.SUPABASE_KEY</div>
                     </div>
                     <div className="pt-2 border-t border-zinc-800">

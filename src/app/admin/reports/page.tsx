@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
   FileBarChart,
   Loader2,
@@ -12,7 +11,6 @@ import {
   Shield,
   Users,
   TrendingUp,
-  TrendingDown,
   Calendar,
   BarChart3,
 } from "lucide-react"

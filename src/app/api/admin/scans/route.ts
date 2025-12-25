@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { isDatabaseConfigured, db } from '@/lib/db';
+import type { ScanHistory } from '@/lib/database.types';
 
 const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
 
@@ -38,7 +39,7 @@ export async function GET(request: NextRequest) {
       query = query.eq('critical_count', 0).eq('high_count', 0);
     }
 
-    const { data: scans, count, error } = await query
+    const { data, count, error } = await query
       .order('scanned_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -46,6 +47,8 @@ export async function GET(request: NextRequest) {
       console.error('Error fetching scans:', error);
       return NextResponse.json({ error: 'Failed to fetch scans' }, { status: 500 });
     }
+
+    const scans = data as ScanHistory[] | null;
 
     // Get user emails for each scan
     const userIds = [...new Set(scans?.map(s => s.user_id) || [])];

@@ -15,7 +15,6 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
-  Eye,
   Filter,
 } from "lucide-react"
 
@@ -48,18 +47,6 @@ export default function AdminScansPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchScans()
-  }, [page, severityFilter])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPage(1)
-      fetchScans()
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [searchQuery])
-
   const fetchScans = async () => {
     try {
       setLoading(true)
@@ -83,6 +70,20 @@ export default function AdminScansPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchScans()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, severityFilter])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1)
+      fetchScans()
+    }, 300)
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery])
 
   const handleDeleteScan = async (scanId: string) => {
     if (!confirm("Are you sure you want to delete this scan record?")) {

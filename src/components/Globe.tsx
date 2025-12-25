@@ -2,15 +2,24 @@
 
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Sphere, Line, Points, PointMaterial } from '@react-three/drei';
+import { Line, Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Generate random points on a sphere
-function generateSpherePoints(count: number, radius: number) {
+// Seeded random number generator for deterministic output
+function seededRandom(seed: number): () => number {
+  return function() {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+}
+
+// Generate random points on a sphere using seeded random
+function generateSpherePoints(count: number, radius: number, seed: number = 12345) {
+  const random = seededRandom(seed);
   const points: THREE.Vector3[] = [];
   for (let i = 0; i < count; i++) {
-    const phi = Math.acos(2 * Math.random() - 1);
-    const theta = 2 * Math.PI * Math.random();
+    const phi = Math.acos(2 * random() - 1);
+    const theta = 2 * Math.PI * random();
     const x = radius * Math.sin(phi) * Math.cos(theta);
     const y = radius * Math.sin(phi) * Math.sin(theta);
     const z = radius * Math.cos(phi);
@@ -86,11 +95,12 @@ function FloatingParticles() {
   const pointsRef = useRef<THREE.Points>(null);
 
   const particlePositions = useMemo(() => {
+    const random = seededRandom(54321);
     const positions = new Float32Array(200 * 3);
     for (let i = 0; i < 200; i++) {
-      const radius = 2.5 + Math.random() * 1.5;
-      const phi = Math.acos(2 * Math.random() - 1);
-      const theta = 2 * Math.PI * Math.random();
+      const radius = 2.5 + random() * 1.5;
+      const phi = Math.acos(2 * random() - 1);
+      const theta = 2 * Math.PI * random();
       positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = radius * Math.cos(phi);
