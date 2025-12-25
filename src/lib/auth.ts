@@ -1,7 +1,6 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
-import GitHub from "next-auth/providers/github"
 import { findUserByEmail, createOAuthUser, updateUser } from "./db"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -9,15 +8,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    GitHub({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          scope: "read:user user:email repo",
-        },
-      },
     }),
     Credentials({
       name: "credentials",
@@ -43,8 +33,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // Handle OAuth sign-in (Google or GitHub)
-      if ((account?.provider === "google" || account?.provider === "github") && user.email) {
+      // Handle OAuth sign-in (Google)
+      if (account?.provider === "google" && user.email) {
         try {
           // Check if user exists in database
           let dbUser = await findUserByEmail(user.email)
@@ -55,8 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               user.email,
               user.name || user.email.split("@")[0],
               user.image || undefined,
-              account.provider,
-              account.provider === "github" ? account.access_token : undefined
+              account.provider
             )
             if (result.error || !result.user) {
               console.error("Failed to create OAuth user:", result.error)
@@ -64,16 +53,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
             dbUser = result.user
           } else {
-            // Update last login and GitHub token for existing user
-            const updateData: Record<string, string | null> = {
+            // Update last login for existing user
+            await updateUser(dbUser.id, {
               last_login_at: new Date().toISOString(),
-            }
-            // Update GitHub token if signing in with GitHub
-            if (account.provider === "github" && account.access_token) {
-              updateData.github_access_token = account.access_token
-              updateData.oauth_provider = "github"
-            }
-            await updateUser(dbUser.id, updateData)
+            })
           }
 
           // Store database user ID for session
@@ -90,10 +73,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.userId = user.id
         token.provider = account?.provider || "credentials"
-      }
-      // Store GitHub token in JWT for API calls
-      if (account?.provider === "github" && account.access_token) {
-        token.githubAccessToken = account.access_token
       }
       return token
     },
