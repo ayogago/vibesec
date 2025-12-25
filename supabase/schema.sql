@@ -34,6 +34,14 @@ EXCEPTION
     WHEN duplicate_column THEN null;
 END $$;
 
+-- Add OAuth columns if they don't exist (for existing databases)
+DO $$ BEGIN
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image VARCHAR(500);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS oauth_provider VARCHAR(50);
+EXCEPTION
+    WHEN duplicate_column THEN null;
+END $$;
+
 -- Create index on email for faster lookups
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 

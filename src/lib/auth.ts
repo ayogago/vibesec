@@ -1,8 +1,14 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import Google from "next-auth/providers/google"
+import { findUserByEmail, createOAuthUser, updateUser } from "./db"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     Credentials({
       name: "credentials",
       credentials: {
@@ -26,10 +32,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account }) {
+      // Handle OAuth sign-in
+      if (account?.provider === "google" && user.email) {
+        try {
+          // Check if user exists in database
+          let dbUser = await findUserByEmail(user.email)
+
+          if (!dbUser) {
+            // Create new user for OAuth
+            const result = await createOAuthUser(
+              user.email,
+              user.name || user.email.split("@")[0],
+              user.image || undefined,
+              "google"
+            )
+            if (result.error || !result.user) {
+              console.error("Failed to create OAuth user:", result.error)
+              return false
+            }
+            dbUser = result.user
+          } else {
+            // Update last login for existing user
+            await updateUser(dbUser.id, {
+              last_login_at: new Date().toISOString(),
+            })
+          }
+
+          // Store database user ID for session
+          user.id = dbUser.id
+          return true
+        } catch (error) {
+          console.error("OAuth sign-in error:", error)
+          return false
+        }
+      }
+      return true
+    },
+    async jwt({ token, user, account }) {
       if (user) {
         token.userId = user.id
-        token.provider = "credentials"
+        token.provider = account?.provider || "credentials"
       }
       return token
     },
