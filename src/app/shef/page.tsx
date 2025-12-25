@@ -10,7 +10,7 @@ import { Shield, Loader2, Mail, Lock, ArrowRight } from "lucide-react"
 import { validateCredentials, setCurrentUser, initializeAdminUser } from "@/lib/users"
 
 // Admin emails that are allowed to access the admin dashboard
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"]
+const ADMIN_EMAILS = ["info@securesitescan.com"]
 
 export default function ShefPage() {
   const { data: session, status } = useSession()
@@ -33,6 +33,7 @@ export default function ShefPage() {
         router.push("/admin")
       } else {
         // Not an admin, sign them out and show error
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setError("Access denied. Admin credentials required.")
       }
     }

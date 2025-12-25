@@ -137,12 +137,12 @@ export interface Database {
         ];
       };
     };
-    Views: {};
-    Functions: {};
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
     Enums: {
       subscription_tier: SubscriptionTier;
     };
-    CompositeTypes: {};
+    CompositeTypes: Record<string, never>;
   };
 }
 

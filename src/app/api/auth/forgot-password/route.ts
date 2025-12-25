@@ -125,8 +125,28 @@ export async function POST(request: NextRequest) {
           subject: 'Reset Your Password - SecureSiteScan',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="color: #10b981; margin: 0;">SecureSiteScan</h1>
+              <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); border-radius: 12px;">
+                <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+                  <tr>
+                    <td style="vertical-align: middle; padding-right: 8px;">
+                      <!-- Shield with Lock Icon -->
+                      <div style="width: 40px; height: 44px; display: inline-block;">
+                        <svg width="40" height="44" viewBox="0 0 44 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M22 4L6 10v10c0 9 6.5 17.5 16 21 9.5-3.5 16-12 16-21V10L22 4z" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+                          <rect x="14" y="19" width="16" height="12" rx="2" fill="#10b981"/>
+                          <path d="M17 19v-4a5 5 0 0 1 10 0v4" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                          <circle cx="22" cy="24" r="2" fill="#022c22"/>
+                          <path d="M22 25v3" stroke="#022c22" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                    </td>
+                    <td style="vertical-align: middle;">
+                      <span style="font-size: 22px; font-weight: 700; letter-spacing: -0.5px;">
+                        <span style="color: #ffffff;">Secure</span><span style="color: #10b981;">Site</span><span style="color: #ffffff;">Scan</span><span style="color: #9ca3af; font-size: 16px; font-weight: 500;">.com</span>
+                      </span>
+                    </td>
+                  </tr>
+                </table>
               </div>
 
               <h2 style="color: #1f2937;">Reset Your Password</h2>

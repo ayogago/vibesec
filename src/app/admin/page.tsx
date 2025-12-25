@@ -11,7 +11,6 @@ import {
   Activity,
   AlertTriangle,
   Crown,
-  TrendingUp,
   Clock,
   DollarSign,
   UserPlus,
@@ -303,7 +302,7 @@ export default function AdminOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-end gap-2 h-32">
-              {analytics?.dailyScans.map((day, index) => {
+              {analytics?.dailyScans.map((day) => {
                 const maxCount = Math.max(...(analytics?.dailyScans.map((d) => d.count) || [1]))
                 const height = maxCount > 0 ? (day.count / maxCount) * 100 : 0
                 return (

@@ -4,7 +4,7 @@ import { isDatabaseConfigured, db, findUserById, updateUser } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import type { SubscriptionTier } from '@/lib/database.types';
 
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 export async function GET(
   request: NextRequest,

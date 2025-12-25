@@ -204,8 +204,8 @@ export default function PrivacyPage() {
                   </ul>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     To exercise these rights, please contact us at{' '}
-                    <a href="mailto:privacy@securesitescan.com" className="text-green-500 hover:underline">
-                      privacy@securesitescan.com
+                    <a href="mailto:info@securesitescan.com" className="text-green-500 hover:underline">
+                      info@securesitescan.com
                     </a>.
                   </p>
                 </div>
@@ -235,7 +235,7 @@ export default function PrivacyPage() {
                   <ul className="mt-4 space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
-                      <span>Email: <a href="mailto:privacy@securesitescan.com" className="text-green-500 hover:underline">privacy@securesitescan.com</a></span>
+                      <span>Email: <a href="mailto:info@securesitescan.com" className="text-green-500 hover:underline">info@securesitescan.com</a></span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />

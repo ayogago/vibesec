@@ -3,7 +3,7 @@ import { isDatabaseConfigured } from '@/lib/db';
 import { auth } from '@/lib/auth';
 
 // Admin emails that have access to database status
-const ADMIN_EMAILS = ["info@securesitescan.com", "owner@securesitescan.com"];
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 export async function GET() {
   try {

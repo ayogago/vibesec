@@ -356,6 +356,7 @@ export default function ResultsPage() {
     const stored = sessionStorage.getItem('scanResult');
     if (stored) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setResult(JSON.parse(stored));
       } catch {
         router.push('/');
@@ -365,7 +366,9 @@ export default function ResultsPage() {
     }
 
     // Get subscription status
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSubscription(getUserSubscription());
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(false);
   }, [router]);
 

@@ -10,7 +10,6 @@ import { SubscriptionTier } from "./subscription"
 // These emails have admin privileges when authenticated
 export const ADMIN_EMAILS = [
   "info@securesitescan.com",
-  "owner@securesitescan.com",
 ];
 
 // Check if email is admin

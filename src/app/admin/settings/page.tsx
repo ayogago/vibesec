@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import {
   Settings,
   Loader2,
@@ -17,10 +16,8 @@ import {
   Save,
   Shield,
   Users,
-  Mail,
   Globe,
   Zap,
-  Lock,
 } from "lucide-react"
 
 interface AppSettings {

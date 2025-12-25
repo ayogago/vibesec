@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
@@ -147,12 +148,12 @@ export default function AboutPage() {
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
               Start scanning your repositories for free. No signup required.
             </p>
-            <a
+            <Link
               href="/#scanner"
               className="mt-8 inline-flex items-center justify-center rounded-md bg-green-600 px-8 py-3 text-sm font-medium text-white shadow hover:bg-green-700 transition-colors"
             >
               Scan Your Repo Now
-            </a>
+            </Link>
           </div>
         </section>
       </main>

@@ -231,8 +231,8 @@ export default function CookiesPage() {
                   <h2 className="text-2xl font-bold">Contact Us</h2>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     If you have questions about our use of cookies, please contact us at{' '}
-                    <a href="mailto:privacy@securesitescan.com" className="text-green-500 hover:underline">
-                      privacy@securesitescan.com
+                    <a href="mailto:info@securesitescan.com" className="text-green-500 hover:underline">
+                      info@securesitescan.com
                     </a>.
                   </p>
                 </div>

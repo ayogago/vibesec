@@ -230,7 +230,7 @@ export default function TermsPage() {
                   <ul className="mt-4 space-y-2 text-muted-foreground">
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
-                      <span>Email: <a href="mailto:legal@securesitescan.com" className="text-green-500 hover:underline">legal@securesitescan.com</a></span>
+                      <span>Email: <a href="mailto:info@securesitescan.com" className="text-green-500 hover:underline">info@securesitescan.com</a></span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mt-2 shrink-0" />

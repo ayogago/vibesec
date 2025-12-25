@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -11,7 +11,6 @@ import {
   Search,
   Users,
   Crown,
-  Ban,
   CheckCircle,
   Mail,
   Calendar,
@@ -58,18 +57,6 @@ export default function AdminUsersPage() {
     subscription: "free" as UserData["subscription"],
   })
 
-  useEffect(() => {
-    fetchUsers()
-  }, [page, subscriptionFilter])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPage(1)
-      fetchUsers()
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [searchQuery])
-
   const fetchUsers = async () => {
     try {
       setLoading(true)
@@ -93,6 +80,20 @@ export default function AdminUsersPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, subscriptionFilter])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1)
+      fetchUsers()
+    }, 300)
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery])
 
   const handleUpdateSubscription = async (userId: string, newTier: UserData["subscription"]) => {
     try {
