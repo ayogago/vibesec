@@ -97,6 +97,73 @@ export async function createUser(
   }
 }
 
+export async function createOAuthUser(
+  email: string,
+  name: string,
+  image?: string,
+  provider: string = 'google'
+): Promise<{ user?: User; error?: string }> {
+  try {
+    if (!isDatabaseConfigured()) {
+      return { error: 'Database not configured' };
+    }
+
+    const client = requireDb();
+
+    // Check if user already exists
+    const { data: existingData } = await client
+      .from('users')
+      .select('*')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (existingData) {
+      const existing = existingData as User;
+      // User exists - update their info and return
+      const { data: updated, error: updateError } = await client
+        .from('users')
+        .update({
+          name: name || existing.name,
+          profile_image: image || existing.profile_image,
+          oauth_provider: provider,
+          last_login_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id)
+        .select()
+        .single();
+
+      if (updateError) {
+        return { error: 'Failed to update account' };
+      }
+      return { user: updated as User };
+    }
+
+    // Create new OAuth user (no password hash needed)
+    const { data, error } = await client
+      .from('users')
+      .insert({
+        email: email.toLowerCase(),
+        name,
+        password_hash: '', // OAuth users don't have passwords
+        profile_image: image || null,
+        oauth_provider: provider,
+        subscription: 'free' as SubscriptionTier,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('OAuth user creation error:', error);
+      return { error: 'Failed to create account' };
+    }
+
+    return { user: data as User };
+  } catch (err) {
+    console.error('OAuth user creation error:', err);
+    return { error: 'Failed to create account' };
+  }
+}
+
 export async function findUserByEmail(email: string): Promise<User | null> {
   try {
     if (!isDatabaseConfigured()) return null;

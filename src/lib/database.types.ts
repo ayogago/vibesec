@@ -24,6 +24,8 @@ export interface Database {
           pending_plan: SubscriptionTier | null;
           reset_token: string | null;
           reset_token_expires: string | null;
+          profile_image: string | null;
+          oauth_provider: string | null;
           created_at: string;
           last_login_at: string | null;
           updated_at: string;
@@ -37,6 +39,8 @@ export interface Database {
           pending_plan?: SubscriptionTier | null;
           reset_token?: string | null;
           reset_token_expires?: string | null;
+          profile_image?: string | null;
+          oauth_provider?: string | null;
           created_at?: string;
           last_login_at?: string | null;
           updated_at?: string;
@@ -50,6 +54,8 @@ export interface Database {
           pending_plan?: SubscriptionTier | null;
           reset_token?: string | null;
           reset_token_expires?: string | null;
+          profile_image?: string | null;
+          oauth_provider?: string | null;
           created_at?: string;
           last_login_at?: string | null;
           updated_at?: string;
