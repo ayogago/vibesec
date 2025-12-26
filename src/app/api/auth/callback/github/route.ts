@@ -49,9 +49,17 @@ export async function GET(request: Request) {
     }
 
     // Update user with GitHub token
-    await updateUser(linkUserId, {
+    console.log("Saving GitHub token for user:", linkUserId)
+    const updatedUser = await updateUser(linkUserId, {
       github_access_token: tokenData.access_token,
     })
+
+    if (!updatedUser) {
+      console.error("Failed to save GitHub token for user:", linkUserId)
+      return NextResponse.redirect(new URL("/dashboard?error=github_save_failed", request.url))
+    }
+
+    console.log("GitHub token saved successfully for user:", linkUserId)
 
     // Clear the linking cookie
     const response = NextResponse.redirect(new URL("/dashboard?github=linked", request.url))
