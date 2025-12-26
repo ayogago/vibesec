@@ -44,7 +44,6 @@ export async function GET(request: NextRequest) {
       .range(offset, offset + limit - 1);
 
     if (error) {
-      console.error('Error fetching scans:', error);
       return NextResponse.json({ error: 'Failed to fetch scans' }, { status: 500 });
     }
 
@@ -70,8 +69,7 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages: Math.ceil((count || 0) / limit),
     });
-  } catch (error) {
-    console.error('Error fetching scans:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch scans' }, { status: 500 });
   }
 }
@@ -98,13 +96,11 @@ export async function DELETE(request: NextRequest) {
     const { error } = await db.from('scan_history').delete().eq('id', scanId);
 
     if (error) {
-      console.error('Error deleting scan:', error);
       return NextResponse.json({ error: 'Failed to delete scan' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting scan:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to delete scan' }, { status: 500 });
   }
 }

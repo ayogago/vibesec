@@ -45,8 +45,7 @@ export async function GET(
       totalScans: totalScans || 0,
       scansToday: dailyCount?.count || 0,
     });
-  } catch (error) {
-    console.error('Error fetching user:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch user' }, { status: 500 });
   }
 }
@@ -91,13 +90,11 @@ export async function PUT(
       .single();
 
     if (error) {
-      console.error('Error updating user:', error);
       return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
     }
 
     return NextResponse.json({ user: { ...data, password_hash: undefined } });
-  } catch (error) {
-    console.error('Error updating user:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
   }
 }
@@ -135,13 +132,11 @@ export async function DELETE(
     const { error } = await db.from('users').delete().eq('id', id);
 
     if (error) {
-      console.error('Error deleting user:', error);
       return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error deleting user:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
   }
 }

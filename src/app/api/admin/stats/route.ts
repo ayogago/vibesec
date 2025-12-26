@@ -113,8 +113,7 @@ export async function GET() {
         ? ((subscriptionCounts.starter + subscriptionCounts.pro) / totalUsers * 100).toFixed(1)
         : 0,
     });
-  } catch (error) {
-    console.error('Error fetching stats:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
   }
 }

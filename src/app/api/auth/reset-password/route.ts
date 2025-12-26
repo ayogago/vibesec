@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import * as db from '@/lib/db';
+import { rateLimit, getClientIP, RATE_LIMITS } from '@/lib/rate-limit';
 
 // GET - Validate token
 export async function GET(request: NextRequest) {
@@ -38,8 +39,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ valid: true });
-  } catch (error) {
-    console.error('Token validation error:', error);
+  } catch {
     return NextResponse.json({ valid: false, error: 'Validation failed' });
   }
 }
@@ -47,6 +47,17 @@ export async function GET(request: NextRequest) {
 // POST - Reset password
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimit(`resetPassword:${clientIP}`, RATE_LIMITS.resetPassword);
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     const { token, password } = await request.json();
 
     if (!token || !password) {
@@ -111,7 +122,6 @@ export async function POST(request: NextRequest) {
       .eq('id', user.id);
 
     if (updateError) {
-      console.error('Password update error:', updateError);
       return NextResponse.json(
         { error: 'Failed to reset password' },
         { status: 500 }
@@ -122,8 +132,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Password reset successfully',
     });
-  } catch (error) {
-    console.error('Reset password error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to reset password' },
       { status: 500 }

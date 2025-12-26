@@ -70,8 +70,7 @@ export async function GET() {
       environment: process.env.NODE_ENV,
       version: '1.0.0',
     });
-  } catch (error) {
-    console.error('Error fetching settings:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
   }
 }
@@ -105,8 +104,7 @@ export async function PUT(request: NextRequest) {
     };
 
     return NextResponse.json({ settings: appSettings });
-  } catch (error) {
-    console.error('Error updating settings:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
   }
 }
@@ -140,8 +138,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
-  } catch (error) {
-    console.error('Error processing action:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to process action' }, { status: 500 });
   }
 }
