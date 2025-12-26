@@ -2,6 +2,28 @@ import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 import { getGitHubToken } from "@/lib/db"
 
+// Simple in-memory cache for repos (5 minute TTL)
+const reposCache = new Map<string, { repos: FormattedRepo[]; timestamp: number }>()
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
+interface FormattedRepo {
+  id: number
+  name: string
+  full_name: string
+  description: string | null
+  private: boolean
+  html_url: string
+  updated_at: string
+  language: string | null
+  default_branch: string
+  stargazers_count: number
+  forks_count: number
+  owner: {
+    login: string
+    avatar_url: string
+  }
+}
+
 export interface GitHubRepo {
   id: number
   name: string
@@ -44,6 +66,18 @@ export async function GET() {
       })
     }
 
+    // Check cache first
+    const cacheKey = session.user.id
+    const cached = reposCache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json({
+        repos: cached.repos,
+        githubConnected: true,
+        total: cached.repos.length,
+        cached: true,
+      })
+    }
+
     // Fetch user's repositories from GitHub
     const repos: GitHubRepo[] = []
     let page = 1
@@ -66,8 +100,38 @@ export async function GET() {
           return NextResponse.json({
             repos: [],
             githubConnected: false,
-            error: "GitHub token expired. Please sign in with GitHub again."
+            error: "GitHub token expired. Please reconnect your GitHub account."
           })
+        }
+        if (response.status === 403) {
+          // Check for rate limit
+          const rateLimitRemaining = response.headers.get("x-ratelimit-remaining")
+          const rateLimitReset = response.headers.get("x-ratelimit-reset")
+
+          if (rateLimitRemaining === "0" && rateLimitReset) {
+            const resetTime = new Date(parseInt(rateLimitReset) * 1000)
+            const minutesUntilReset = Math.ceil((resetTime.getTime() - Date.now()) / 60000)
+
+            // Return cached data if available, even if stale
+            if (cached) {
+              return NextResponse.json({
+                repos: cached.repos,
+                githubConnected: true,
+                total: cached.repos.length,
+                cached: true,
+                rateLimited: true,
+                resetIn: minutesUntilReset,
+              })
+            }
+
+            return NextResponse.json({
+              repos: [],
+              githubConnected: true,
+              error: `GitHub API rate limit exceeded. Try again in ${minutesUntilReset} minute${minutesUntilReset === 1 ? '' : 's'}.`,
+              rateLimited: true,
+              resetIn: minutesUntilReset,
+            })
+          }
         }
         throw new Error(`GitHub API error: ${response.status}`)
       }
@@ -89,7 +153,7 @@ export async function GET() {
     }
 
     // Return repos with consistent field names matching what dashboard expects
-    const formattedRepos = repos.map((repo) => ({
+    const formattedRepos: FormattedRepo[] = repos.map((repo) => ({
       id: repo.id,
       name: repo.name,
       full_name: repo.full_name,
@@ -107,13 +171,15 @@ export async function GET() {
       },
     }))
 
+    // Cache the results
+    reposCache.set(cacheKey, { repos: formattedRepos, timestamp: Date.now() })
+
     return NextResponse.json({
       repos: formattedRepos,
       githubConnected: true,
       total: formattedRepos.length,
     })
-  } catch (error) {
-    console.error("GitHub repos error:", error)
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch repositories", githubConnected: false },
       { status: 500 }
