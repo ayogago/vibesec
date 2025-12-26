@@ -604,10 +604,10 @@ function DashboardContent() {
         {activeTab === "repos" && (
           <>
             {/* URL Scanner Card */}
-            <Card className="bg-card/50 backdrop-blur border-border/50 mb-6">
+            <Card className="bg-card/50 backdrop-blur border-border/50 mb-6 relative z-10">
               <CardContent className="p-4">
                 <form onSubmit={handleUrlScan} className="flex gap-3">
-                  <div className="relative flex-1" ref={dropdownRef}>
+                  <div className="relative flex-1 z-20" ref={dropdownRef}>
                     <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder={githubConnected ? "Search or enter GitHub URL..." : "https://github.com/username/repo"}
