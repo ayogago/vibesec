@@ -256,7 +256,10 @@ export async function updateUser(
   updates: Partial<Pick<User, 'name' | 'subscription' | 'pending_plan' | 'last_login_at' | 'oauth_provider' | 'github_access_token'>>
 ): Promise<User | null> {
   try {
-    if (!isDatabaseConfigured()) return null;
+    if (!isDatabaseConfigured()) {
+      console.error("updateUser: Database not configured");
+      return null;
+    }
 
     const client = requireDb();
     const { data, error } = await client
@@ -266,9 +269,19 @@ export async function updateUser(
       .select()
       .single();
 
-    if (error || !data) return null;
+    if (error) {
+      console.error("updateUser error:", error.message, error.details, error.hint);
+      return null;
+    }
+
+    if (!data) {
+      console.error("updateUser: No data returned for userId:", userId);
+      return null;
+    }
+
     return data as User;
-  } catch {
+  } catch (err) {
+    console.error("updateUser exception:", err);
     return null;
   }
 }
