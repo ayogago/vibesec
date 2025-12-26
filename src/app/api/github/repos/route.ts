@@ -88,23 +88,23 @@ export async function GET() {
       page++
     }
 
-    // Format repos for the frontend
+    // Return repos with consistent field names matching what dashboard expects
     const formattedRepos = repos.map((repo) => ({
       id: repo.id,
       name: repo.name,
-      fullName: repo.full_name,
-      private: repo.private,
-      url: repo.html_url,
+      full_name: repo.full_name,
       description: repo.description,
-      defaultBranch: repo.default_branch,
-      updatedAt: repo.updated_at,
-      pushedAt: repo.pushed_at,
+      private: repo.private,
+      html_url: repo.html_url,
+      updated_at: repo.updated_at,
       language: repo.language,
-      stars: repo.stargazers_count,
-      forks: repo.forks_count,
-      fork: repo.fork,
-      owner: repo.owner.login,
-      ownerAvatar: repo.owner.avatar_url,
+      default_branch: repo.default_branch,
+      stargazers_count: repo.stargazers_count,
+      forks_count: repo.forks_count,
+      owner: {
+        login: repo.owner.login,
+        avatar_url: repo.owner.avatar_url,
+      },
     }))
 
     return NextResponse.json({
