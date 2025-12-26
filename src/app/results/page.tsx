@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SignupModal } from '@/components/SignupModal';
@@ -15,13 +16,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import type { ScanResult, Severity, Finding } from '@/lib/scanner';
+import type { ScanResult, Severity, Finding, FindingCategory } from '@/lib/scanner';
 import {
-  getUserSubscription,
   SUBSCRIPTION_LIMITS,
-  isUserSignedIn,
   type SubscriptionTier,
 } from '@/lib/subscription';
+
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 // Export functions
 function exportToJSON(result: ScanResult) {
@@ -188,6 +189,64 @@ function groupFindingsBySeverity(findings: Finding[]): Record<Severity, Finding[
   return groups;
 }
 
+function groupFindingsByCategory(findings: Finding[]): Record<string, Finding[]> {
+  const groups: Record<string, Finding[]> = {};
+
+  for (const finding of findings) {
+    const category = finding.category || 'Other';
+    if (!groups[category]) {
+      groups[category] = [];
+    }
+    groups[category].push(finding);
+  }
+
+  // Sort categories by severity (most critical findings first)
+  const severityScore = (f: Finding) => {
+    switch (f.severity) {
+      case 'CRITICAL': return 4;
+      case 'HIGH': return 3;
+      case 'MEDIUM': return 2;
+      case 'LOW': return 1;
+      default: return 0;
+    }
+  };
+
+  // Sort findings within each category by severity
+  for (const category of Object.keys(groups)) {
+    groups[category].sort((a, b) => severityScore(b) - severityScore(a));
+  }
+
+  return groups;
+}
+
+function getCategoryIcon(category: string): string {
+  const icons: Record<string, string> = {
+    'Secrets': '🔑',
+    'Supabase RLS': '🛡️',
+    'SQL Injection': '💉',
+    'XSS': '⚠️',
+    'Auth Issues': '🔐',
+    'CORS': '🌐',
+    'Cookies': '🍪',
+    'Env Exposure': '📤',
+    'Client Auth': '👤',
+    'Security Headers': '📋',
+    'Rate Limiting': '⏱️',
+    'File Upload': '📁',
+    'CSRF': '🔄',
+    'Info Disclosure': 'ℹ️',
+    'Debug Mode': '🐛',
+    'Hardcoded IPs': '🔢',
+    'Docker': '🐳',
+    'CI/CD': '⚙️',
+    'Unprotected API': '🚪',
+    'IDOR': '🆔',
+    'Path Traversal': '📂',
+    'Command Injection': '💻',
+  };
+  return icons[category] || '🔍';
+}
+
 function FindingCard({ finding }: { finding: Finding }) {
   return (
     <Card className="bg-card/50 border-border/50 hover:border-border transition-colors">
@@ -345,18 +404,169 @@ function SeveritySection({
   );
 }
 
+// Compact row for findings table
+function CompactFindingRow({ finding, isLocked, onUnlock }: { finding: Finding; isLocked: boolean; onUnlock: () => void }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  if (isLocked) {
+    return (
+      <div className="border-b border-border/30 py-2 px-3 bg-muted/20 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <Badge variant="outline" className={`shrink-0 text-xs px-1.5 py-0 ${getSeverityColor(finding.severity)}`}>
+            {finding.severity.slice(0, 1)}
+          </Badge>
+          <span className="text-sm text-muted-foreground truncate blur-sm">{finding.title}</span>
+        </div>
+        <Button size="sm" variant="ghost" onClick={onUnlock} className="shrink-0 text-xs h-7">
+          <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Unlock
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border-b border-border/30">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full py-2 px-3 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors text-left"
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <Badge variant="outline" className={`shrink-0 text-xs px-1.5 py-0 ${getSeverityColor(finding.severity)}`}>
+            {finding.severity.slice(0, 1)}
+          </Badge>
+          <span className="text-sm truncate">{finding.title}</span>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-xs text-muted-foreground hidden sm:inline truncate max-w-[150px]">{finding.filePath}</span>
+          <svg className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+      {isExpanded && (
+        <div className="px-3 pb-3 pt-1 bg-muted/10">
+          <p className="text-sm text-muted-foreground mb-2">{finding.description}</p>
+          <div className="text-xs text-muted-foreground mb-2">
+            📁 {finding.filePath}{finding.lineNumber ? `:${finding.lineNumber}` : ''}
+          </div>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="fix" className="border-border/30">
+              <AccordionTrigger className="text-xs hover:no-underline py-2">
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  How to fix
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="pt-1">
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-xs font-medium text-red-400 mb-1">Vulnerable:</p>
+                    <pre className="bg-red-500/5 border border-red-500/20 rounded p-2 text-xs font-mono overflow-x-auto">
+                      <code className="text-red-400">{finding.codeSnippet}</code>
+                    </pre>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-green-400 mb-1">Fix:</p>
+                    <pre className="bg-green-500/5 border border-green-500/20 rounded p-2 text-xs font-mono overflow-x-auto whitespace-pre-wrap">
+                      <code className="text-green-400">{finding.fixSnippet}</code>
+                    </pre>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Category section with compact table view
+function CategorySection({
+  category,
+  findings,
+  visibleCount,
+  onUnlock,
+}: {
+  category: string;
+  findings: Finding[];
+  visibleCount: number;
+  onUnlock: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(true);
+  const criticalCount = findings.filter(f => f.severity === 'CRITICAL').length;
+  const highCount = findings.filter(f => f.severity === 'HIGH').length;
+  const mediumCount = findings.filter(f => f.severity === 'MEDIUM').length;
+  const lowCount = findings.filter(f => f.severity === 'LOW').length;
+
+  const visibleFindings = findings.slice(0, visibleCount);
+  const lockedCount = Math.max(0, findings.length - visibleCount);
+
+  return (
+    <Card className="bg-card/50 border-border/50 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/30 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <span className="text-lg">{getCategoryIcon(category)}</span>
+          <span className="font-medium">{category}</span>
+          <span className="text-sm text-muted-foreground">({findings.length})</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-xs">
+            {criticalCount > 0 && <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-500">{criticalCount}C</span>}
+            {highCount > 0 && <span className="px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-500">{highCount}H</span>}
+            {mediumCount > 0 && <span className="px-1.5 py-0.5 rounded bg-yellow-500/10 text-yellow-500">{mediumCount}M</span>}
+            {lowCount > 0 && <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500">{lowCount}L</span>}
+          </div>
+          <svg className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+      {isOpen && (
+        <div className="border-t border-border/30">
+          {visibleFindings.map((finding, idx) => (
+            <CompactFindingRow key={finding.id} finding={finding} isLocked={false} onUnlock={onUnlock} />
+          ))}
+          {lockedCount > 0 && (
+            <div className="py-3 px-4 bg-muted/20 text-center">
+              <p className="text-sm text-muted-foreground mb-2">
+                +{lockedCount} more finding{lockedCount > 1 ? 's' : ''} locked
+              </p>
+              <Button size="sm" onClick={onUnlock} className="bg-green-600 hover:bg-green-700">
+                Unlock All
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 export default function ResultsPage() {
   const [result, setResult] = useState<ScanResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [subscription, setSubscription] = useState<SubscriptionTier>('anonymous');
   const [showSignupModal, setShowSignupModal] = useState(false);
+  const [viewMode, setViewMode] = useState<'category' | 'severity'>('category');
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Determine if user is admin
+  const isAdmin = session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('scanResult');
     if (stored) {
       try {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setResult(JSON.parse(stored));
       } catch {
         router.push('/');
@@ -364,27 +574,42 @@ export default function ResultsPage() {
     } else {
       router.push('/');
     }
-
-    // Get subscription status
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSubscription(getUserSubscription());
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLoading(false);
   }, [router]);
+
+  // Get subscription from session
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (session?.user) {
+      // User is logged in - get their subscription from session
+      const userSub = (session.user as { subscription?: string }).subscription as SubscriptionTier;
+      if (userSub && ['free', 'starter', 'pro'].includes(userSub)) {
+        setSubscription(userSub);
+      } else {
+        setSubscription('free');
+      }
+    } else {
+      setSubscription('anonymous');
+    }
+    setLoading(false);
+  }, [session, status]);
 
   const handleSignupSuccess = () => {
     setShowSignupModal(false);
-    setSubscription(getUserSubscription());
+    // Subscription will update via session
   };
 
   const handleUnlock = () => {
-    if (!isUserSignedIn()) {
+    if (!session?.user) {
       setShowSignupModal(true);
     } else {
       // User is signed in but needs to upgrade
       router.push('/pricing');
     }
   };
+
+  // Admin and pro users see all findings
+  const effectiveSubscription: SubscriptionTier = isAdmin ? 'pro' : subscription;
 
   if (loading) {
     return (
@@ -406,11 +631,23 @@ export default function ResultsPage() {
   }
 
   const groupedFindings = groupFindingsBySeverity(result.findings);
+  const groupedByCategory = groupFindingsByCategory(result.findings);
   const scanDate = new Date(result.scannedAt).toLocaleString();
-  const limits = SUBSCRIPTION_LIMITS[subscription];
+  const limits = SUBSCRIPTION_LIMITS[effectiveSubscription];
   const totalFindings = result.findings.length;
   const visibleFindings = Math.min(totalFindings, limits.visibleFindings);
   const lockedFindings = totalFindings - visibleFindings;
+
+  // Sort categories by priority (most severe first)
+  const sortedCategories = Object.entries(groupedByCategory).sort((a, b) => {
+    const getMaxSeverity = (findings: Finding[]) => {
+      if (findings.some(f => f.severity === 'CRITICAL')) return 4;
+      if (findings.some(f => f.severity === 'HIGH')) return 3;
+      if (findings.some(f => f.severity === 'MEDIUM')) return 2;
+      return 1;
+    };
+    return getMaxSeverity(b[1]) - getMaxSeverity(a[1]);
+  });
 
   // Distribute visible count across severity groups
   let remainingVisible = limits.visibleFindings;
@@ -427,6 +664,15 @@ export default function ResultsPage() {
     const toShow = Math.min(count, remainingVisible);
     visibleBySeverity[severity] = toShow;
     remainingVisible -= toShow;
+  }
+
+  // Calculate visible per category (distribute evenly then by priority)
+  const visibleByCategory: Record<string, number> = {};
+  let categoryRemainingVisible = limits.visibleFindings;
+  for (const [category, findings] of sortedCategories) {
+    const toShow = Math.min(findings.length, categoryRemainingVisible);
+    visibleByCategory[category] = toShow;
+    categoryRemainingVisible -= toShow;
   }
 
   return (
@@ -682,58 +928,101 @@ export default function ResultsPage() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="space-y-8">
-                <SeveritySection
-                  severity="Critical"
-                  findings={groupedFindings.CRITICAL}
-                  color="text-red-500"
-                  visibleCount={visibleBySeverity.CRITICAL}
-                  onUnlock={handleUnlock}
-                  icon={
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  }
-                />
+              <div className="space-y-6">
+                {/* View Toggle */}
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold">
+                    Security Findings
+                    {isAdmin && <Badge className="ml-2 bg-green-600">Admin View</Badge>}
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">View:</span>
+                    <div className="flex rounded-lg border border-border overflow-hidden">
+                      <button
+                        onClick={() => setViewMode('category')}
+                        className={`px-3 py-1.5 text-sm ${viewMode === 'category' ? 'bg-muted' : 'hover:bg-muted/50'}`}
+                      >
+                        By Category
+                      </button>
+                      <button
+                        onClick={() => setViewMode('severity')}
+                        className={`px-3 py-1.5 text-sm ${viewMode === 'severity' ? 'bg-muted' : 'hover:bg-muted/50'}`}
+                      >
+                        By Severity
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-                <SeveritySection
-                  severity="High Priority"
-                  findings={groupedFindings.HIGH}
-                  color="text-orange-500"
-                  visibleCount={visibleBySeverity.HIGH}
-                  onUnlock={handleUnlock}
-                  icon={
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  }
-                />
+                {viewMode === 'category' ? (
+                  /* Category View - Compact */
+                  <div className="space-y-3">
+                    {sortedCategories.map(([category, findings]) => (
+                      <CategorySection
+                        key={category}
+                        category={category}
+                        findings={findings}
+                        visibleCount={visibleByCategory[category] || 0}
+                        onUnlock={handleUnlock}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  /* Severity View - Original */
+                  <div className="space-y-8">
+                    <SeveritySection
+                      severity="Critical"
+                      findings={groupedFindings.CRITICAL}
+                      color="text-red-500"
+                      visibleCount={visibleBySeverity.CRITICAL}
+                      onUnlock={handleUnlock}
+                      icon={
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      }
+                    />
 
-                <SeveritySection
-                  severity="Medium Priority"
-                  findings={groupedFindings.MEDIUM}
-                  color="text-yellow-500"
-                  visibleCount={visibleBySeverity.MEDIUM}
-                  onUnlock={handleUnlock}
-                  icon={
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  }
-                />
+                    <SeveritySection
+                      severity="High Priority"
+                      findings={groupedFindings.HIGH}
+                      color="text-orange-500"
+                      visibleCount={visibleBySeverity.HIGH}
+                      onUnlock={handleUnlock}
+                      icon={
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      }
+                    />
 
-                <SeveritySection
-                  severity="Low Priority"
-                  findings={groupedFindings.LOW}
-                  color="text-blue-500"
-                  visibleCount={visibleBySeverity.LOW}
-                  onUnlock={handleUnlock}
-                  icon={
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  }
-                />
+                    <SeveritySection
+                      severity="Medium Priority"
+                      findings={groupedFindings.MEDIUM}
+                      color="text-yellow-500"
+                      visibleCount={visibleBySeverity.MEDIUM}
+                      onUnlock={handleUnlock}
+                      icon={
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      }
+                    />
+
+                    <SeveritySection
+                      severity="Low Priority"
+                      findings={groupedFindings.LOW}
+                      color="text-blue-500"
+                      visibleCount={visibleBySeverity.LOW}
+                      onUnlock={handleUnlock}
+                      icon={
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      }
+                    />
+                  </div>
+                )}
 
                 {/* Upgrade CTA */}
                 {lockedFindings > 0 && (
