@@ -119,6 +119,7 @@ function DashboardContent() {
         user_not_found: "User session not found. Please log in again.",
         github_callback_failed: "GitHub callback failed. Please try again.",
         github_save_failed: "Failed to save GitHub connection. Please try again.",
+        no_user_id: "Session issue detected. Please log out and log back in.",
       }
       setError(errorMessages[errorParam] || "An error occurred. Please try again.")
       router.replace("/dashboard")

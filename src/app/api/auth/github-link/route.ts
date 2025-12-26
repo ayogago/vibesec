@@ -13,9 +13,16 @@ export async function GET(request: Request) {
 
     const session = await auth()
 
-    if (!session?.user?.id) {
+    console.log("GitHub link - session:", JSON.stringify(session, null, 2))
+
+    if (!session?.user) {
       console.error("No session found for GitHub link")
       return NextResponse.redirect(new URL("/login?callbackUrl=/dashboard", request.url))
+    }
+
+    if (!session.user.id) {
+      console.error("Session exists but no user ID - session.user:", JSON.stringify(session.user, null, 2))
+      return NextResponse.redirect(new URL("/dashboard?error=no_user_id", request.url))
     }
 
     // Store the user ID in a cookie for the callback
