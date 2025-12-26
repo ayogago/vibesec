@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { updateUser, findUserById } from "@/lib/db"
 import { cookies } from "next/headers"
+import { verifySignedValue } from "@/lib/signed-cookie"
 
 // This handles the callback after GitHub OAuth when linking to existing account
 export async function GET(request: Request) {
@@ -8,17 +9,23 @@ export async function GET(request: Request) {
     const url = new URL(request.url)
     const code = url.searchParams.get("code")
 
-    // Get the stored user ID from cookie
+    // Get the stored signed user ID from cookie and verify it
     const cookieStore = await cookies()
-    const linkUserId = cookieStore.get("github_link_user_id")?.value
+    const signedUserId = cookieStore.get("github_link_user_id")?.value
 
     if (!code) {
       return NextResponse.redirect(new URL("/dashboard?error=github_auth_failed", request.url))
     }
 
-    if (!linkUserId) {
+    if (!signedUserId) {
       // No linking intent - redirect to dashboard with error
       return NextResponse.redirect(new URL("/dashboard?error=no_link_session", request.url))
+    }
+
+    // Verify the signed cookie to prevent tampering
+    const linkUserId = verifySignedValue(signedUserId)
+    if (!linkUserId) {
+      return NextResponse.redirect(new URL("/dashboard?error=invalid_link_session", request.url))
     }
 
     // Exchange code for access token
@@ -38,7 +45,6 @@ export async function GET(request: Request) {
     const tokenData = await tokenResponse.json()
 
     if (tokenData.error || !tokenData.access_token) {
-      console.error("GitHub token exchange error:", tokenData.error)
       return NextResponse.redirect(new URL("/dashboard?error=github_token_failed", request.url))
     }
 
@@ -49,25 +55,20 @@ export async function GET(request: Request) {
     }
 
     // Update user with GitHub token
-    console.log("Saving GitHub token for user:", linkUserId)
     const updatedUser = await updateUser(linkUserId, {
       github_access_token: tokenData.access_token,
     })
 
     if (!updatedUser) {
-      console.error("Failed to save GitHub token for user:", linkUserId)
       return NextResponse.redirect(new URL("/dashboard?error=github_save_failed", request.url))
     }
-
-    console.log("GitHub token saved successfully for user:", linkUserId)
 
     // Clear the linking cookie
     const response = NextResponse.redirect(new URL("/dashboard?github=linked", request.url))
     response.cookies.delete("github_link_user_id")
 
     return response
-  } catch (error) {
-    console.error("GitHub callback error:", error)
+  } catch {
     return NextResponse.redirect(new URL("/dashboard?error=github_callback_failed", request.url))
   }
 }

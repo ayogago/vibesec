@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as db from '@/lib/db';
 import bcrypt from 'bcryptjs';
+import { auth } from '@/lib/auth';
+
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 // Admin setup endpoint - creates or resets the admin user
-// Requires ADMIN_PASSWORD env var
+// Requires either SETUP_SECRET (for initial setup) or admin session (for resets)
 export async function POST(request: NextRequest) {
   try {
     // Check if database is configured
@@ -14,16 +17,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get action from request body (optional)
+    // Get action and setup_secret from request body
     let action = 'create';
+    let setupSecret = '';
     try {
       const body = await request.json();
       action = body.action || 'create';
+      setupSecret = body.setup_secret || '';
     } catch {
       // No body provided, default to create
     }
 
+    // Check if admin already exists
     const adminEmail = 'info@securesitescan.com';
+    const existingAdmin = await db.findUserByEmail(adminEmail);
+
+    // Authentication: require setup secret for initial setup, admin session for resets
+    if (existingAdmin) {
+      // Admin exists - require admin session to reset
+      const session = await auth();
+      if (!session?.user?.email || !ADMIN_EMAILS.includes(session.user.email)) {
+        return NextResponse.json({ error: 'Unauthorized. Admin session required.' }, { status: 401 });
+      }
+    } else {
+      // No admin exists - require setup secret for initial creation
+      const expectedSecret = process.env.SETUP_SECRET;
+      if (!expectedSecret || setupSecret !== expectedSecret) {
+        return NextResponse.json({ error: 'Invalid or missing setup_secret.' }, { status: 401 });
+      }
+    }
 
     // Get password from environment variable
     const adminPassword = process.env.ADMIN_PASSWORD;
@@ -41,9 +63,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if admin already exists
-    const existingAdmin = await db.findUserByEmail(adminEmail);
-
     // Hash the password
     const passwordHash = await bcrypt.hash(adminPassword, 10);
 
@@ -57,7 +76,6 @@ export async function POST(request: NextRequest) {
           .eq('email', adminEmail);
 
         if (error) {
-          console.error('Failed to reset admin password:', error);
           return NextResponse.json(
             { error: 'Failed to reset admin password.' },
             { status: 500 }
@@ -90,7 +108,6 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Failed to create admin user:', error);
       return NextResponse.json(
         { error: 'Failed to create admin user.' },
         { status: 500 }
@@ -101,8 +118,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Admin user created successfully. You can now login with info@securesitescan.com',
     });
-  } catch (error) {
-    console.error('Admin setup error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Admin setup failed.' },
       { status: 500 }

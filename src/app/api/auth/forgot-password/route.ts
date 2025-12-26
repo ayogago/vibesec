@@ -107,7 +107,6 @@ export async function POST(request: NextRequest) {
         .eq('id', user.id);
 
       if (updateError) {
-        console.error('Failed to store reset token:', updateError);
         return NextResponse.json(
           { error: 'Failed to process request' },
           { status: 500 }
@@ -203,8 +202,7 @@ SecureSiteScan - AI-Powered Security Scanning
       success: true,
       message: 'If an account exists with this email, you will receive a password reset link.',
     });
-  } catch (error) {
-    console.error('Forgot password error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to process request' },
       { status: 500 }

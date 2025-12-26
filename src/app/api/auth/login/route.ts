@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as db from '@/lib/db';
+import { rateLimit, getClientIP, RATE_LIMITS } from '@/lib/rate-limit';
 
 // Track if admin initialization has been attempted this server lifecycle
 let adminInitAttempted = false;
 
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimit(`login:${clientIP}`, RATE_LIMITS.login);
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many login attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     const { email, password } = await request.json();
 
     if (!email || !password) {
@@ -28,8 +40,7 @@ export async function POST(request: NextRequest) {
       adminInitAttempted = true;
       try {
         await db.initializeAdminUser();
-      } catch (e) {
-        console.error('Admin initialization error:', e);
+      } catch {
         // Continue with login attempt even if admin init fails
       }
     }
@@ -50,8 +61,7 @@ export async function POST(request: NextRequest) {
       user: userWithoutPassword,
       message: 'Login successful',
     });
-  } catch (error) {
-    console.error('Login error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Login failed' },
       { status: 500 }

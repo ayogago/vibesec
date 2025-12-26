@@ -3,9 +3,21 @@ import { createClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import { auth } from '@/lib/auth';
 import * as db from '@/lib/db';
+import { rateLimit, getClientIP, RATE_LIMITS } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimit(`changePassword:${clientIP}`, RATE_LIMITS.changePassword);
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     // Check authentication
     const session = await auth();
     if (!session?.user?.email) {
@@ -74,7 +86,6 @@ export async function POST(request: NextRequest) {
       .eq('id', user.id);
 
     if (updateError) {
-      console.error('Password update error:', updateError);
       return NextResponse.json(
         { error: 'Failed to update password' },
         { status: 500 }
@@ -85,8 +96,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Password changed successfully',
     });
-  } catch (error) {
-    console.error('Change password error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to change password' },
       { status: 500 }

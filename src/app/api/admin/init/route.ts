@@ -1,13 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import bcrypt from 'bcryptjs';
 import * as db from '@/lib/db';
+import { auth } from '@/lib/auth';
+
+const ADMIN_EMAILS = ["info@securesitescan.com"];
 
 // This endpoint initializes or resets the admin user
-// It should be called during initial setup or when resetting admin password
-// For security, it only works if ADMIN_PASSWORD is set
+// Requires either SETUP_SECRET (for initial setup) or admin session (for resets)
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     // Check if database is configured
     if (!db.isDatabaseConfigured()) {
@@ -18,6 +20,35 @@ export async function POST() {
         },
         { status: 500 }
       );
+    }
+
+    const adminEmail = 'info@securesitescan.com';
+
+    // Check if admin exists
+    const existingAdmin = await db.findUserByEmail(adminEmail);
+
+    // Get setup_secret from request body if provided
+    let setupSecret = '';
+    try {
+      const body = await request.json();
+      setupSecret = body.setup_secret || '';
+    } catch {
+      // No body provided
+    }
+
+    // Authentication: require setup secret for initial setup, admin session for resets
+    if (existingAdmin) {
+      // Admin exists - require admin session to reset
+      const session = await auth();
+      if (!session?.user?.email || !ADMIN_EMAILS.includes(session.user.email)) {
+        return NextResponse.json({ success: false, error: 'Unauthorized. Admin session required.' }, { status: 401 });
+      }
+    } else {
+      // No admin exists - require setup secret for initial creation
+      const expectedSecret = process.env.SETUP_SECRET;
+      if (!expectedSecret || setupSecret !== expectedSecret) {
+        return NextResponse.json({ success: false, error: 'Invalid or missing setup_secret.' }, { status: 401 });
+      }
     }
 
     // Check if ADMIN_PASSWORD is set
@@ -32,13 +63,9 @@ export async function POST() {
       );
     }
 
-    const adminEmail = 'info@securesitescan.com';
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
     const client = createClient(supabaseUrl, supabaseAnonKey);
-
-    // Check if admin exists
-    const existingAdmin = await db.findUserByEmail(adminEmail);
 
     // Hash the password
     const passwordHash = await bcrypt.hash(adminPassword, 10);
@@ -96,19 +123,13 @@ export async function POST() {
         action: 'created',
       });
     }
-  } catch (error) {
-    console.error('Admin init error:', error);
+  } catch {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: 'Admin init failed.',
       },
       { status: 500 }
     );
   }
-}
-
-// Also support GET for easier testing
-export async function GET() {
-  return POST();
 }

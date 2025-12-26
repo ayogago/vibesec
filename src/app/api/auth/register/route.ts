@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as db from '@/lib/db';
+import { rateLimit, getClientIP, RATE_LIMITS } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimit(`register:${clientIP}`, RATE_LIMITS.register);
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many registration attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     const { email, password, name, pendingPlan } = await request.json();
 
     if (!email || !password || !name) {
@@ -40,8 +52,7 @@ export async function POST(request: NextRequest) {
       user: userWithoutPassword,
       message: 'Account created successfully',
     });
-  } catch (error) {
-    console.error('Registration error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to create account' },
       { status: 500 }

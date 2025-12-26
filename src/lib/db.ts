@@ -162,13 +162,11 @@ export async function createOAuthUser(
       .single();
 
     if (error) {
-      console.error('OAuth user creation error:', error);
       return { error: 'Failed to create account' };
     }
 
     return { user: data as User };
-  } catch (err) {
-    console.error('OAuth user creation error:', err);
+  } catch {
     return { error: 'Failed to create account' };
   }
 }
@@ -257,7 +255,6 @@ export async function updateUser(
 ): Promise<User | null> {
   try {
     if (!isDatabaseConfigured()) {
-      console.error("updateUser: Database not configured");
       return null;
     }
 
@@ -270,18 +267,15 @@ export async function updateUser(
       .single();
 
     if (error) {
-      console.error("updateUser error:", error.message, error.details, error.hint);
       return null;
     }
 
     if (!data) {
-      console.error("updateUser: No data returned for userId:", userId);
       return null;
     }
 
     return data as User;
-  } catch (err) {
-    console.error("updateUser exception:", err);
+  } catch {
     return null;
   }
 }
@@ -319,13 +313,11 @@ export async function updateUserSubscription(
       .single();
 
     if (error) {
-      console.error('Error updating subscription:', error);
       return { error: error.message };
     }
 
     return { user: data as User };
-  } catch (error) {
-    console.error('Error updating subscription:', error);
+  } catch {
     return { error: 'Failed to update subscription' };
   }
 }
